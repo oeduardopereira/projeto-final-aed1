@@ -1,6 +1,6 @@
 #include <iostream>
 #include <map>
-#include "Receitas.cpp"
+#include "Receitas.h"
 
 using namespace std;
 

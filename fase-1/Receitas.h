@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Ingredientes.cpp"
+#include "Ingredientes.h"
 
 using namespace std;
 
