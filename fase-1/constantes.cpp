@@ -5,18 +5,18 @@
 using namespace std;
 
 const map<int, string> INGREDIENTES_IDS = {
-    {1, "Pão de Hamburguer"},
-    {2, "Pão-Brioche"},
-    {3, "Carne Bovina"},
-    {4, "Carne Vegana"},
-    {5, "Filé de Frango"},
-    {6, "Tomamte"},
-    {7, "Alface"},
-    {8, "Cebola"},
-    {9, "Mostarda"},
+    {1, "Pão de Hamburguer"}, //done (perspective && shelf) --
+    {2, "Pão-Brioche"}, // done (perspective && shelf) --
+    {3, "Carne Bovina"}, // done (perspective && shelf) --
+    {4, "Carne Vegana"}, // done (perspective && shelf) --
+    {5, "Filé de Frango"}, // done (perspective && shelf) --
+    {6, "Tomate"}, // done (perspective && shelf) --
+    {7, "Alface"}, //done (shelf) --
+    {8, "Cebola"}, // done(perspective && shelf) --
+    {9, "Mostarda"}, 
     {10, "Maionese"},
-    {11, "Bacon"},
-    {12, "Cebola Caramelizada"},
+    {11, "Bacon"}, // done (perspective && shelf) --
+    {12, "Cebola Caramelizada"}, //done (perspective) --
     {-1, ""}
 };
 
