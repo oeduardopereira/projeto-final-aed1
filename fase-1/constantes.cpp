@@ -23,3 +23,5 @@ const map<int, string> INGREDIENTES_IDS = {
 const vector<vector<int>> INGREDIENTES = {
     {1, 2}, {3, 4, 5}, {-1, 6, 7, 8}, {-1, 9, 10}, {-1, 11, 12}
 };
+
+const int MAX_INGREDIENTES = 7;
