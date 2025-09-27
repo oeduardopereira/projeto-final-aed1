@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
-#include "Receitas.h"
+#include "Receita.h"
 
 using namespace std;
 
-void geraReceita() {}
