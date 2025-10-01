@@ -1,5 +1,8 @@
 #include <iostream>
 
+#ifndef Ingrediente_H
+#define Ingrediente_H
+
 using namespace std;
 
 class Ingrediente {
@@ -20,5 +23,15 @@ class Ingrediente {
         string getNome() {
             return this->nome;
         }
+
+        int getCamada() {
+            return this->camada;
+        }
+
+        int getId() {
+            return this->id;
+        }
     
 };
+
+#endif

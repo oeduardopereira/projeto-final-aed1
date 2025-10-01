@@ -24,7 +24,7 @@ class Receita {
         void geraReceitaIds() {
             int n;
             
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < MAX_INGREDIENTES; i++) {
                 switch(i) {
                     case 0: {
                         n = geraValorAleatorio(1, 2);

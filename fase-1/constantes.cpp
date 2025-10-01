@@ -2,6 +2,9 @@
 #include <map>
 #include <vector>
 
+#ifndef Constantes_H
+#define Constantes_H
+
 using namespace std;
 
 const map<int, string> INGREDIENTES_IDS = {
@@ -25,3 +28,5 @@ const vector<vector<int>> INGREDIENTES = {
 };
 
 const int MAX_INGREDIENTES = 7;
+
+#endif
