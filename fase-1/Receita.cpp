@@ -1,12 +1,9 @@
 #include <iostream>
-#include <random>
 #include "Ingrediente.cpp"
 #include "constantes.cpp"
+#include "utils.cpp"
 
 using namespace std;
-
-random_device rd;
-mt19937 gerador(rd());
 
 class Receita {
 
@@ -27,49 +24,43 @@ class Receita {
         void geraReceitaIds() {
             int n;
             
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < MAX_INGREDIENTES; i++) {
                 switch(i) {
                     case 0: {
-                        uniform_int_distribution<> range(1, 2);
-                        n = range(gerador);
+                        n = geraValorAleatorio(1, 2);
                         receitaPorIds[i] = n;
                         break;
                     }
 
                     case 1: {
-                        uniform_int_distribution<> range(3, 5);
-                        n = range(gerador);
+                        n = geraValorAleatorio(3, 5);
                         receitaPorIds[i] = n;
                         break;
                     }
 
                     case 2: {
-                        uniform_int_distribution<> range(5, 8);
-                        n = range(gerador);
+                        n = geraValorAleatorio(5, 8);
                         if (n == 5) n = -1;
                         receitaPorIds[i] = n;
                         break;
                     }
  
                     case 3: {
-                        uniform_int_distribution<> range(8, 10);
-                        n = range(gerador);
+                        n = geraValorAleatorio(8, 10);
                         if (n == 8) n = -1;
                         receitaPorIds[i] = n;
                         break;
                     }
  
                     case 4: {
-                        uniform_int_distribution<> range(10, 12);
-                        n = range(gerador);
+                        n = geraValorAleatorio(10 ,12);
                         if (n == 10) n = -1;
                         receitaPorIds[i] = n;
                         break;
                     }
  
                     case 5: {
-                        uniform_int_distribution<> range(2, 12);
-                        n = range(gerador);
+                        n = geraValorAleatorio(2, 12);
                         if (n == 2) n = -1;
                         receitaPorIds[i] = n;
                         break;
