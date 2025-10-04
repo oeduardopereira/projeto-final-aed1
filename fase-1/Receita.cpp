@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
+
 #include "Ingrediente.cpp"
 #include "constantes.cpp"
 #include "utils.cpp"
+#include "pilha.cpp"
 
 using namespace std;
 
@@ -12,6 +14,7 @@ class Receita {
         string nome;
         const int id;
         static int id_counter;
+        pilha *pilha_ingredientes;
         vector<Ingrediente> ingredientes;
         vector<int> receitaPorIds;
         bool pronta;
@@ -78,21 +81,22 @@ class Receita {
         /*
             Essa função faz um mapeamento dos ids escolhidos aleatoriamente,
             para os ingredientes correspondentes no map de <id, ingrediente>
+            e empilha na pilha_ingredientes.
         */
         void mapeiaIngredientePorId() {
             for (int i = 0; i < MAX_INGREDIENTES; i++) {
                 Ingrediente ing = Ingrediente(INGREDIENTES_IDS.at(receitaPorIds[i]), i, receitaPorIds[i]);
-                ingredientes[i] = ing;
+                empilha(this->pilha_ingredientes, ing);
             }
         }
-
 
     public:
 
         Receita (string _nome) : id(id_counter++), receitaPorIds(MAX_INGREDIENTES), ingredientes(MAX_INGREDIENTES) {
             id_counter = 0;
-            this->nome = nome;
+            this->nome = _nome;
             this->pronta = false;
+            pilha_ingredientes = criaPilha();
             geraReceitaIds();
             mapeiaIngredientePorId();
         }
@@ -103,6 +107,14 @@ class Receita {
 
         Ingrediente getIngredientes(int pos) {
             return ingredientes[pos];
+        }
+
+        string getNome() {
+            return this->nome;
+        }
+
+        pilha* getPilha() {
+            return this->pilha_ingredientes;
         }
 };
 
