@@ -23,27 +23,19 @@ bool delete_pilha(pilha *p) {
 
 // checa se a pilha está cheia
 bool cheia(pilha *p) {
-   if (p->indexTopo == MAX_INGREDIENTES - 1) {
-       return true;
-   } else {
-       return false;
-   }
+   return p->indexTopo >= MAX_INGREDIENTES - 1;
 }
 
 // checa se a pilha está vazia
 bool vazia(pilha *p) {
-   if (p->indexTopo == -1) {
-       return true;
-   } else {
-       return false;
-   }
-}
-
+   return p->indexTopo == -1;
+} 
+    
 // Empilha o elemento x na pilha 'p'. Retorna se a operação de certo (true = deu certo, false = não deu certo)
 bool empilha(pilha *p, Ingrediente i) {
    if (!cheia(p)) { // checa se a pilha está cheia antes de inserir um valor
-       p->indexTopo += 1; // atualiza o topo
-       p->ingredientes[p->indexTopo] = i; // insere o valor no topo
+        p->indexTopo += 1; // atualiza o topo
+        p->ingredientes[p->indexTopo] = i; // insere o valor no topo
        return true;
    }
    else return false;
@@ -54,10 +46,11 @@ Ingrediente desempilha(pilha *p, bool *deuCerto) {
    if(!vazia(p)) {
        Ingrediente desempilhado = p->ingredientes[p->indexTopo]; // valor que vai ser desempilhado
        p->indexTopo--; // atualiza o topo
+       *deuCerto = true;
        return desempilhado;
    } else {
        *deuCerto = false;
-       Ingrediente i = Ingrediente("", -1, -1);
+       Ingrediente i = Ingrediente("Erro ao desempilhar!", -2, -2);
        return i;
    }
 }

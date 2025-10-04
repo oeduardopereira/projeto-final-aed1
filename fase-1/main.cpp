@@ -11,24 +11,20 @@ int main() {
     Ingrediente ing;
 
     for (int i = 0; i < 7; i++) {
-        string nome = r.getIngredientes(i).getNome();
-        ing = Ingrediente(
-            r.getIngredientes(i).getNome(),
-            r.getIngredientes(i).getCamada(),
-            r.getIngredientes(i).getId()
-        );
-        empilha(p, ing);
-        cout << "pos["<< i << "] = " << nome << endl;
+        ing = r.getIngredientes(i);
+        
+        empilha(p, ing) ? cout << "pos["<< i << "] = " << ing.getNome() << endl
+            : cout << "Erro ao empilhar " << ing.getNome() << endl;
     }
 
-    cout << "Desepilhando:" << endl;
-    cout << "Topo -> ";
+    cout << endl << "Desepilhando:" << endl;
+    cout << endl <<  "Topo -> ";
 
     bool ok;
 
-    for (int i =0; i < 7; i++) {
+    for (int i = 0; i < 7; i++) {
         ing = desempilha(p, &ok);
-        cout << ing.getNome() << endl;
+        ok ? cout << ing.getNome() << endl : cout << "Erro ao desempilhar o ingrediente " << i << endl;
     }
 
     delete_pilha(p);

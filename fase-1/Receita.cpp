@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "Ingrediente.cpp"
 #include "constantes.cpp"
 #include "utils.cpp"
@@ -11,8 +12,8 @@ class Receita {
         string nome;
         const int id;
         static int id_counter;
-        Ingrediente *ingredientes;
-        int *receitaPorIds;
+        vector<Ingrediente> ingredientes;
+        vector<int> receitaPorIds;
         bool pronta;
 
         /*
@@ -80,7 +81,6 @@ class Receita {
         */
         void mapeiaIngredientePorId() {
             for (int i = 0; i < MAX_INGREDIENTES; i++) {
-                int n = receitaPorIds[i];
                 Ingrediente ing = Ingrediente(INGREDIENTES_IDS.at(receitaPorIds[i]), i, receitaPorIds[i]);
                 ingredientes[i] = ing;
             }
@@ -89,12 +89,10 @@ class Receita {
 
     public:
 
-        Receita (string _nome) : id(id_counter++) {
+        Receita (string _nome) : id(id_counter++), receitaPorIds(MAX_INGREDIENTES), ingredientes(MAX_INGREDIENTES) {
             id_counter = 0;
             this->nome = nome;
             this->pronta = false;
-            this->receitaPorIds = new int[MAX_INGREDIENTES];
-            this->ingredientes = new Ingrediente[MAX_INGREDIENTES];
             geraReceitaIds();
             mapeiaIngredientePorId();
         }
@@ -105,11 +103,6 @@ class Receita {
 
         Ingrediente getIngredientes(int pos) {
             return ingredientes[pos];
-        }
-
-        ~Receita() {
-            delete[] this->ingredientes;
-            delete[] this->receitaPorIds;
         }
 };
 
