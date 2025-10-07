@@ -1,4 +1,4 @@
-#include <iostream>
+#include <string>
 #include <map>
 #include <vector>
 
@@ -20,7 +20,7 @@ const map<int, string> INGREDIENTES_IDS = {
     {10, "Maionese"},
     {11, "Bacon"}, // done (perspective && shelf) --
     {12, "Cebola Caramelizada"}, //done (perspective) --
-    {-1, ""}
+    {-1, "-"}
 };
 
 const vector<vector<int>> INGREDIENTES = {
