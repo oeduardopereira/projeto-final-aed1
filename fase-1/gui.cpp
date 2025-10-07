@@ -24,10 +24,22 @@ int main() {
     sf::FloatRect comanda_colision = comanda.getGlobalBounds();
     sf::Color originalComanda = comanda.getColor();
 
+    sf::Texture comanda_aberta_texture;
+    if (!comanda_aberta_texture.loadFromFile("./sprites/Comanda_Aberta.png")) {
+        return -1;
+    }
+
+    sf::Sprite comanda_aberta;
+    comanda_aberta.setTexture(comanda_aberta_texture);
+    comanda_aberta.setScale(sf::Vector2f(0.8f, 0.8f));
+    sf::FloatRect comanda_aberta_colision = comanda_aberta.getGlobalBounds();
+    sf::Color originalComanda_aberta = comanda_aberta.getColor();
+
     sf::Texture cozinha_texture;
     if (!cozinha_texture.loadFromFile("./sprites/prot_coz.png")) {
         return -1;
     }
+
 
     sf::Sprite cozinha;
     cozinha.setTexture(cozinha_texture);
@@ -41,7 +53,7 @@ int main() {
     sf::Sprite tomate;
     tomate.setTexture(tomate_texture);
     tomate.setPosition(sf::Vector2f(90, 450));
-    tomate.setScale(sf::Vector2f(0.3f, 0.3f));
+    tomate.setScale(sf::Vector2f(0.25f, 0.25f));
     sf::FloatRect tomate_colision = tomate.getGlobalBounds();
     sf::Color originalTomate = tomate.getColor();
 
@@ -94,7 +106,7 @@ int main() {
     }
     sf::Sprite topo_brioche;
     topo_brioche.setTexture(topo_brioche_texture);
-    topo_brioche.setScale(sf::Vector2f(0.3f, 0.3f));
+    topo_brioche.setScale(sf::Vector2f(0.4f, 0.4f));
     sf::FloatRect topo_brioche_colision = topo_brioche.getGlobalBounds();
     sf::Color originaltopo_Brioche = topo_brioche.getColor();
 
@@ -202,7 +214,7 @@ int main() {
     }
     sf::Sprite topo_pao;
     topo_pao.setTexture(topo_pao_texture);
-    topo_pao.setScale(sf::Vector2f(0.3f, 0.3f));
+    topo_pao.setScale(sf::Vector2f(0.4f, 0.4f));
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
@@ -212,6 +224,7 @@ int main() {
     bool pedido = false;
     int bread_type = -1;
     bool bread_base = false;
+    bool vendo_pedido = false;
     float layer_offset = 0;
     sf::Vector2i cursorPosition = sf::Mouse::getPosition(win);
     sf::Vector2f worldPos = win.mapPixelToCoords(cursorPosition);
@@ -237,19 +250,20 @@ int main() {
                     pedido = false;
                     bread_type = -1;
                     bread_base = false;
+                    layer_offset = 0.0f;
                 }
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
                 if (e.mouseButton.button == sf::Mouse::Left) {
                     if (tomate_colision.contains(worldPos)) {
-                        tomate.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        tomate.setPosition(sf::Vector2f(430, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(tomate);
                     }
 
                     if (alface_colision.contains(worldPos)) {
-                        alface.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        alface.setPosition(sf::Vector2f(425, 495 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(alface);
                     }
@@ -266,7 +280,7 @@ int main() {
                             base_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
                             elements.push_back(base_brioche);
                         } else {
-                            topo_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            topo_brioche.setPosition(sf::Vector2f(407, 475 - layer_offset));
                             elements.push_back(topo_brioche);
                         }
 
@@ -326,7 +340,7 @@ int main() {
                             base_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
                             elements.push_back(base_pao);
                         } else {
-                            topo_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            topo_pao.setPosition(sf::Vector2f(407, 475 - layer_offset));
                             elements.push_back(topo_pao);
                         }
 
@@ -338,7 +352,13 @@ int main() {
                     }
 
                     if (comanda_colision.contains(worldPos) && pedido) {
-                        cout << "Escolheu comanda" << endl;
+                        if (!vendo_pedido) {
+                            vendo_pedido = true;
+                            comanda_aberta.setPosition(sf::Vector2f(200, 300));
+                        } else {
+                            vendo_pedido = false;
+                        }
+                        
                     }
                 }
             }
@@ -353,6 +373,10 @@ int main() {
                 comanda.setColor(originalComanda);
             }
             win.draw(comanda);
+
+            if (vendo_pedido) {
+                win.draw(comanda_aberta);
+            }
         }
         for (sf::Sprite s : elements) {
             win.draw(s);
