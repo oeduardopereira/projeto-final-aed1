@@ -25,14 +25,14 @@ int main() {
     sf::Color originalComanda = comanda.getColor();
 
     sf::Texture cozinha_texture;
-    if (!cozinha_texture.loadFromFile("./sprites/prot_coz.jpeg")) {
+    if (!cozinha_texture.loadFromFile("./sprites/prot_coz.png")) {
         return -1;
     }
 
     sf::Sprite cozinha;
     cozinha.setTexture(cozinha_texture);
     cozinha.setPosition(sf::Vector2f(0, 0));
-    cozinha.setScale(sf::Vector2f(0.75f, 1.0f));
+    cozinha.setScale(sf::Vector2f(0.6f, 0.81f));
 
     sf::Texture tomate_texture;
     if (!tomate_texture.loadFromFile("./sprites/Tomate.png")) {
@@ -77,6 +77,26 @@ int main() {
     brioche.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect brioche_colision = brioche.getGlobalBounds();
     sf::Color originalBrioche = brioche.getColor();
+
+    sf::Texture base_brioche_texture;
+    if (!base_brioche_texture.loadFromFile("./sprites/Base_Brioche.png")) {
+        return -1;
+    }
+    sf::Sprite base_brioche;
+    base_brioche.setTexture(base_brioche_texture);
+    base_brioche.setScale(sf::Vector2f(0.3f, 0.3f));
+    sf::FloatRect base_brioche_colision = base_brioche.getGlobalBounds();
+    sf::Color originalbase_Brioche = base_brioche.getColor();
+
+    sf::Texture topo_brioche_texture;
+    if (!topo_brioche_texture.loadFromFile("./sprites/Topo_Brioche.png")) {
+        return -1;
+    }
+    sf::Sprite topo_brioche;
+    topo_brioche.setTexture(topo_brioche_texture);
+    topo_brioche.setScale(sf::Vector2f(0.3f, 0.3f));
+    sf::FloatRect topo_brioche_colision = topo_brioche.getGlobalBounds();
+    sf::Color originaltopo_Brioche = topo_brioche.getColor();
 
     sf::Texture cebola_car_texture;
     if (!cebola_car_texture.loadFromFile("./sprites/Cebola_Car.png")) {
@@ -156,7 +176,7 @@ int main() {
     sf::Color originalMustard = mustard.getColor();
 
     sf::Texture pao_texture;
-    if (!pao_texture.loadFromFile("./sprites/Pao_hamb.png")) {
+    if (!pao_texture.loadFromFile("./sprites/Pao.png")) {
         return -1;
     }
     sf::Sprite pao;
@@ -164,23 +184,35 @@ int main() {
     pao.setPosition(sf::Vector2f(500, 300));
     pao.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect pao_colision = pao.getGlobalBounds();
-    sf::Color originalPao = pao.getColor();
+    sf::Color originalpao = pao.getColor();
 
-    elements.push_back(tomate);
-    elements.push_back(alface);
-    elements.push_back(bacon);
-    elements.push_back(brioche);
-    elements.push_back(cebola_car);
-    elements.push_back(cebola_nor);
-    elements.push_back(frango);
-    elements.push_back(hamburguer_bov);
-    elements.push_back(hamburguer_veg);
-    elements.push_back(ketchup);
-    elements.push_back(mustard);
-    elements.push_back(pao);
+    sf::Texture base_pao_texture;
+    if (!base_pao_texture.loadFromFile("./sprites/Base_Pao.png")) {
+        return -1;
+    }
+    sf::Sprite base_pao;
+    base_pao.setTexture(base_pao_texture);
+    base_pao.setScale(sf::Vector2f(0.3f, 0.3f));
+    sf::FloatRect base_pao_colision = base_pao.getGlobalBounds();
+    sf::Color originalbase_pao = base_pao.getColor();
+
+    sf::Texture topo_pao_texture;
+    if (!topo_pao_texture.loadFromFile("./sprites/Topo_Pao.png")) {
+        return -1;
+    }
+    sf::Sprite topo_pao;
+    topo_pao.setTexture(topo_pao_texture);
+    topo_pao.setScale(sf::Vector2f(0.3f, 0.3f));
+    sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
+    sf::Color originaltopo_pao = topo_pao.getColor();
+
+    sf::Sprite* Dragged;
 
     //Window loop
     bool pedido = false;
+    int bread_type = -1;
+    bool bread_base = false;
+    float layer_offset = 0;
     sf::Vector2i cursorPosition = sf::Mouse::getPosition(win);
     sf::Vector2f worldPos = win.mapPixelToCoords(cursorPosition);
     while (win.isOpen()) {
@@ -201,58 +233,108 @@ int main() {
                 }
 
                 if (e.key.code == sf::Keyboard::Enter) {
+                    elements.clear();
                     pedido = false;
+                    bread_type = -1;
+                    bread_base = false;
                 }
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
                 if (e.mouseButton.button == sf::Mouse::Left) {
                     if (tomate_colision.contains(worldPos)) {
-                        cout << "Escolheu tomate" << endl;
+                        tomate.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(tomate);
                     }
 
                     if (alface_colision.contains(worldPos)) {
-                        cout << "Escolheu alface" << endl;
+                        alface.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(alface);
                     }
 
                     if (bacon_colision.contains(worldPos)) {
-                        cout << "Escolheu bacon" << endl;
+                        bacon.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(bacon);
                     }
 
-                    if (brioche_colision.contains(worldPos)) {
-                        cout << "Escolheu brioche" << endl;
+                    if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
+                        bread_type = 1;
+                        if (!bread_base) {
+                            base_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            elements.push_back(base_brioche);
+                        } else {
+                            topo_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            elements.push_back(topo_brioche);
+                        }
+
+                        if (!bread_base) {
+                            bread_base = true;
+                        }
+
+                        layer_offset += 6.5f;                        
                     }
 
                     if (cebola_car_colision.contains(worldPos)) {
-                        cout << "Escolheu cebola_car" << endl;
+                        cebola_car.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(cebola_car);
                     }
 
                     if (cebola_nor_colision.contains(worldPos)) {
-                        cout << "Escolheu cebola_nor" << endl;
+                        cebola_nor.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(cebola_nor);
                     }
 
                     if (frango_colision.contains(worldPos)) {
-                        cout << "Escolheu frango" << endl;
+                        frango.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(frango);
                     }
 
                     if (hamburguer_bov_colision.contains(worldPos)) {
-                        cout << "Escolheu hamburguer_bov" << endl;
+                        hamburguer_bov.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(hamburguer_bov);
                     }
 
                     if (hamburguer_veg_colision.contains(worldPos)) {
-                        cout << "Escolheu hamburguer_veg" << endl;
+                        hamburguer_veg.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(hamburguer_veg);
                     }
 
                     if (ketchup_colision.contains(worldPos)) {
-                        cout << "Escolheu ketchup" << endl;
+                        ketchup.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(ketchup);
                     }
 
                     if (mustard_colision.contains(worldPos)) {
-                        cout << "Escolheu mustard" << endl;
+                        mustard.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                        layer_offset += 6.5f;
+                        elements.push_back(mustard);
                     }
 
-                    if (pao_colision.contains(worldPos)) {
-                        cout << "Escolheu pao" << endl;
+                    if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
+                        bread_type = 0;
+
+                        if (!bread_base) {
+                            base_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            elements.push_back(base_pao);
+                        } else {
+                            topo_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            elements.push_back(topo_pao);
+                        }
+
+                        if (!bread_base) {
+                            bread_base = true;
+                        }
+
+                        layer_offset += 6.5f;
                     }
 
                     if (comanda_colision.contains(worldPos) && pedido) {
@@ -262,80 +344,6 @@ int main() {
             }
         }
 
-        if (tomate_colision.contains(worldPos)) {
-            cout << "tom";
-            tomate.setColor(sf::Color::Blue);
-        } else {
-            tomate.setColor(originalTomate);
-        }
-
-        if (alface_colision.contains(worldPos)) {
-            alface.setColor(sf::Color::Blue);
-        } else {
-            alface.setColor(originalAlface);
-        }
-
-        if (bacon_colision.contains(worldPos)) {
-            bacon.setColor(sf::Color::Blue);
-        } else {
-            bacon.setColor(originalBacon);
-        }
-
-        if (brioche_colision.contains(worldPos)) {
-            brioche.setColor(sf::Color::Blue);
-        } else {
-            brioche.setColor(originalBrioche);
-        }
-
-        if (cebola_car_colision.contains(worldPos)) {
-            cebola_car.setColor(sf::Color::Blue);
-        } else {
-            cebola_car.setColor(originalCebola_Car);
-        }
-
-        if (cebola_nor_colision.contains(worldPos)) {
-            cebola_nor.setColor(sf::Color::Blue);
-        } else {
-            cebola_nor.setColor(originalCebola_Nor);
-        }
-
-        if (frango_colision.contains(worldPos)) {
-            frango.setColor(sf::Color::Blue);
-        } else {
-            frango.setColor(originalFrango);
-        }
-
-        if (hamburguer_bov_colision.contains(worldPos)) {
-            hamburguer_bov.setColor(sf::Color::Blue);
-        } else {
-            hamburguer_bov.setColor(originalHamburguer_Bov);
-        }
-
-        if (hamburguer_veg_colision.contains(worldPos)) {
-            hamburguer_veg.setColor(sf::Color::Blue);
-        } else {
-            hamburguer_veg.setColor(originalHamburguer_Veg);
-        }
-
-        if (ketchup_colision.contains(worldPos)) {
-            ketchup.setColor(sf::Color::Blue);
-        } else {
-            ketchup.setColor(originalKetchup);
-        }
-
-        if (mustard_colision.contains(worldPos)) {
-            mustard.setColor(sf::Color::Blue);
-        } else {
-            mustard.setColor(originalMustard);
-        }
-
-        if (pao_colision.contains(worldPos)) {
-            pao.setColor(sf::Color::Blue);
-        } else {
-            pao.setColor(originalPao);
-        }
-        
-        //drawloop
         win.clear(sf::Color::Black);
         win.draw(cozinha);
         if (pedido) {
