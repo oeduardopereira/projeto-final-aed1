@@ -2,6 +2,9 @@
 #include <map>
 #include <random>
 
+#include "utils.h"
+#include "constantes.h"
+
 using namespace std;
 
 random_device rd;
@@ -15,3 +18,9 @@ int geraValorAleatorio(int min, int max) {
     return n;
 }
 
+void listaIngredientes() {
+
+    for (auto i = INGREDIENTES_IDS.begin(); i != INGREDIENTES_IDS.end(); i++) {
+        cout << "ID: " << i->first << " | Ingrediente: " << i->second << endl;
+    }
+}
