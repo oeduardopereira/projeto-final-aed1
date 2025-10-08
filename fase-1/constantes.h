@@ -17,7 +17,7 @@ const map<int, string> INGREDIENTES_IDS = {
     {7, "Alface"}, //done (shelf) --
     {8, "Cebola"}, // done(perspective && shelf) --
     {9, "Mostarda"}, 
-    {10, "Maionese"},
+    {10, "Ketchup"},
     {11, "Bacon"}, // done (perspective && shelf) --
     {12, "Cebola Caramelizada"}, //done (perspective) --
     {-1, "-"}

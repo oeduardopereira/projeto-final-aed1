@@ -237,7 +237,28 @@ int main() {
     Ingrediente ing;
     bool ok = true;
     string prefixo_receita = "Hamburguer";
+    Receita* receita;
+    pilha* receita_montada;
+    bool ing_picked = false;
+    bool start = true;
     while (win.isOpen()) {
+        if (start) {
+            start = false;
+            id_escolhido = 0;
+            camada_atual = 0;
+            id_receita++;
+            receita_montada = criaPilha();
+
+            //restarts
+            stringstream nome;
+            nome << prefixo_receita;
+            nome << " ";
+            nome << id_receita;
+            receita = new Receita(nome.str());
+            pedido = true;
+            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+            mostra_pilha((*receita).getPilha());
+        }
         //Event Info Getting Section
         cursorPosition = sf::Mouse::getPosition(win);
         worldPos = win.mapPixelToCoords(cursorPosition);
@@ -250,29 +271,41 @@ int main() {
             }
 
             if (e.type == sf::Event::KeyPressed) {
-                if (e.key.code == sf::Keyboard::G) {
-                    stringstream nome;
-                    nome << prefixo_receita;
-                    nome << " ";
-                    nome << id_receita;
-                    Receita* receita = new Receita(nome.str());
-                    pedido = true;
-                    cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
-                    mostra_pilha((*receita).getPilha());
-                }
+                /*if (e.key.code == sf::Keyboard::Enter) {
+                    //verification
+                    if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
+                        cout << "Parabéns! Você acertou a receita!" << endl;
+                        id_receita++;
+                    } else {
+                        cout << "Que pena! Você errou a receita!" << endl;
+                        ok = false;
+                        break;
+                    }
 
-                if (e.key.code == sf::Keyboard::Enter) {
+                    //resets
                     elements.clear();
                     pedido = false;
                     bread_type = -1;
                     bread_base = false;
                     layer_offset = 0.0f;
+                    delete receita;
+                    delete_pilha(receita_montada);
 
                     id_escolhido = 0;
                     camada_atual = 0;
                     id_receita++;
-                    pilha *receita_montada = criaPilha();
-                }
+                    receita_montada = criaPilha();
+
+                    //restarts
+                    stringstream nome;
+                    nome << prefixo_receita;
+                    nome << " ";
+                    nome << id_receita;
+                    receita = new Receita(nome.str());
+                    pedido = true;
+                    cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+                    mostra_pilha((*receita).getPilha());
+                }*/
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -281,18 +314,24 @@ int main() {
                         tomate.setPosition(sf::Vector2f(430, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(tomate);
+                        id_escolhido = 6;
+                        ing_picked = true;
                     }
 
                     if (alface_colision.contains(worldPos)) {
                         alface.setPosition(sf::Vector2f(425, 495 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(alface);
+                        id_escolhido = 7;
+                        ing_picked = true;
                     }
 
                     if (bacon_colision.contains(worldPos)) {
                         bacon.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(bacon);
+                        id_escolhido = 11;
+                        ing_picked = true;
                     }
 
                     if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
@@ -304,7 +343,8 @@ int main() {
                             topo_brioche.setPosition(sf::Vector2f(407, 475 - layer_offset));
                             elements.push_back(topo_brioche);
                         }
-
+                        id_escolhido = 2;
+                        ing_picked = true;
                         if (!bread_base) {
                             bread_base = true;
                         }
@@ -316,42 +356,56 @@ int main() {
                         cebola_car.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(cebola_car);
+                        id_escolhido = 12;
+                        ing_picked = true;
                     }
 
                     if (cebola_nor_colision.contains(worldPos)) {
                         cebola_nor.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(cebola_nor);
+                        id_escolhido = 8;
+                        ing_picked = true;
                     }
 
                     if (frango_colision.contains(worldPos)) {
                         frango.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(frango);
+                        id_escolhido = 5;
+                        ing_picked = true;
                     }
 
                     if (hamburguer_bov_colision.contains(worldPos)) {
                         hamburguer_bov.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(hamburguer_bov);
+                        id_escolhido = 3;
+                        ing_picked = true;
                     }
 
                     if (hamburguer_veg_colision.contains(worldPos)) {
                         hamburguer_veg.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(hamburguer_veg);
+                        id_escolhido = 4;
+                        ing_picked = true;
                     }
 
                     if (ketchup_colision.contains(worldPos)) {
                         ketchup.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(ketchup);
+                        id_escolhido = 10;
+                        ing_picked = true;
                     }
 
                     if (mustard_colision.contains(worldPos)) {
                         mustard.setPosition(sf::Vector2f(425, 500 - layer_offset));
                         layer_offset += 6.5f;
                         elements.push_back(mustard);
+                        id_escolhido = 9;
+                        ing_picked = true;
                     }
 
                     if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
@@ -364,7 +418,8 @@ int main() {
                             topo_pao.setPosition(sf::Vector2f(407, 475 - layer_offset));
                             elements.push_back(topo_pao);
                         }
-
+                        id_escolhido = 1;
+                        ing_picked = true;
                         if (!bread_base) {
                             bread_base = true;
                         }
@@ -385,23 +440,68 @@ int main() {
             }
         }
 
-        win.clear(sf::Color::Black);
-        win.draw(cozinha);
-        if (pedido) {
-            if (comanda_colision.contains(worldPos)) {
-                comanda.setColor(sf::Color::Blue);
-            } else {
-                comanda.setColor(originalComanda);
-            }
-            win.draw(comanda);
+        if (ing_picked) {
+            ing_picked = false;
+            ing = Ingrediente(INGREDIENTES_IDS.at(id_escolhido), camada_atual, id_escolhido);
+            empilha(receita_montada, ing);
+            camada_atual++;
+        }
 
-            if (vendo_pedido) {
-                win.draw(comanda_aberta);
+        if (camada_atual == (*receita).getQtdIngredientes()) {
+            //verification
+            if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
+                cout << "Parabéns! Você acertou a receita!" << endl;
+                id_receita++;
+            } else {
+                cout << "Que pena! Você errou a receita!" << endl;
+                ok = false;
+                break;
+            }
+
+            //resets
+            elements.clear();
+            pedido = false;
+            bread_type = -1;
+            bread_base = false;
+            layer_offset = 0.0f;
+
+            delete receita;
+            delete_pilha(receita_montada);
+            id_escolhido = 0;
+            camada_atual = 0;
+            receita_montada = criaPilha();
+
+            //restarts
+            stringstream nome;
+            nome << prefixo_receita;
+            nome << " ";
+            nome << id_receita;
+            receita = new Receita(nome.str());
+            pedido = true;
+            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+            mostra_pilha((*receita).getPilha());
+        } 
+
+        win.clear(sf::Color::Black);
+        if (ok) {
+            if (pedido) {
+                 win.draw(cozinha);
+                if (comanda_colision.contains(worldPos)) {
+                    comanda.setColor(sf::Color::Blue);
+                } else {
+                    comanda.setColor(originalComanda);
+                }
+                win.draw(comanda);
+
+                if (vendo_pedido) {
+                    win.draw(comanda_aberta);
+                }
+            }
+            for (sf::Sprite s : elements) {
+                win.draw(s);
             }
         }
-        for (sf::Sprite s : elements) {
-            win.draw(s);
-        }
+        
         win.display();
     }
 }
