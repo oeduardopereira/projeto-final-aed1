@@ -17,6 +17,7 @@ class Receita {
         vector<Ingrediente> ingredientes;
         vector<int> receitaPorIds;
         bool pronta;
+        int qtd_ingredientes;
 
         void geraReceitaIds();
         void mapeiaIngredientePorId();
@@ -26,7 +27,7 @@ class Receita {
         ~Receita() {
             delete_pilha(pilha_ingredientes);
         }
-
+        int getQtdIngredientes();
         int getReceitaPorIds(int pos) const; 
         Ingrediente getIngredientes(int pos) const;
         string getNome() const;
