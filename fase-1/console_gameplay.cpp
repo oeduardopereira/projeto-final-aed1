@@ -54,6 +54,7 @@ int main() {
                 if (camada_atual == (*receita).getQtdIngredientes()) {
                     if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
                         cout << "Parabéns! Você acertou a receita!" << endl;
+                        id_receita++;
                         break;
                     } else {
                         cout << "Que pena! Você errou a receita!" << endl;

@@ -222,8 +222,6 @@ int main() {
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
-    sf::Sprite* Dragged;
-
     //Window loop
     bool pedido = false;
     int bread_type = -1;
@@ -232,6 +230,13 @@ int main() {
     float layer_offset = 0;
     sf::Vector2i cursorPosition = sf::Mouse::getPosition(win);
     sf::Vector2f worldPos = win.mapPixelToCoords(cursorPosition);
+
+    int id_escolhido;
+    int camada_atual;
+    int id_receita = 0;
+    Ingrediente ing;
+    bool ok = true;
+    string prefixo_receita = "Hamburguer";
     while (win.isOpen()) {
         //Event Info Getting Section
         cursorPosition = sf::Mouse::getPosition(win);
@@ -246,7 +251,14 @@ int main() {
 
             if (e.type == sf::Event::KeyPressed) {
                 if (e.key.code == sf::Keyboard::G) {
+                    stringstream nome;
+                    nome << prefixo_receita;
+                    nome << " ";
+                    nome << id_receita;
+                    Receita* receita = new Receita(nome.str());
                     pedido = true;
+                    cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+                    mostra_pilha((*receita).getPilha());
                 }
 
                 if (e.key.code == sf::Keyboard::Enter) {
@@ -255,6 +267,11 @@ int main() {
                     bread_type = -1;
                     bread_base = false;
                     layer_offset = 0.0f;
+
+                    id_escolhido = 0;
+                    camada_atual = 0;
+                    id_receita++;
+                    pilha *receita_montada = criaPilha();
                 }
             }
 
