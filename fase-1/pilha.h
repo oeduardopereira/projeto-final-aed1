@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 
 #include "Ingrediente.h"
 #include "constantes.h"
@@ -25,6 +26,7 @@ pilha* copia_pilha(pilha *pilha_atual);
 
 #include <vector>
 void mostra_pilha(pilha *p);
+string retornaString(pilha *p);
 bool pilhas_iguais(pilha *p1, pilha *p2);
 
 // cria uma nova pilha e retorna a referência
@@ -118,6 +120,25 @@ void mostra_pilha(pilha *p) {
     }
 
     delete_pilha(p_aux);
+}
+
+string retornaString(pilha *p) {
+    pilha *p_aux = copia_pilha(p);
+    if (p_aux == NULL) return "Erro na pilha"; 
+
+    stringstream ss;
+
+    while(!vazia(p_aux)) {
+        bool ok;
+        Ingrediente ing = desempilha(p_aux, &ok);
+        ok ? ss << ing.getNome() << endl : ss << "Erro ao desempilhar!" << endl;
+    }
+
+    ss << "Fim da receita" << endl;
+
+    delete_pilha(p_aux);
+
+    return ss.str();
 }
 
 bool pilhas_iguais(pilha *p1, pilha *p2) {

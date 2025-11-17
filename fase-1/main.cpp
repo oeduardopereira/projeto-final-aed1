@@ -233,6 +233,11 @@ int main() {
     timerText.setFillColor(sf::Color::Black);
     timerText.setPosition(sf::Vector2f(75, 25));
 
+    sf::Text recipeText;
+    recipeText.setFont(font);
+    recipeText.setCharacterSize(16);
+    recipeText.setFillColor(sf::Color::Black);
+
     //Window loop
     bool pedido = false;
     int bread_type = -1;
@@ -264,11 +269,11 @@ int main() {
             receita_montada = criaPilha();
 
             //restarts
-            stringstream nome;
-            nome << prefixo_receita;
-            nome << " ";
-            nome << id_receita;
-            receita = new Receita(nome.str());
+            stringstream nomeReceita;
+            nomeReceita << prefixo_receita;
+            nomeReceita << " ";
+            nomeReceita << id_receita;
+            receita = new Receita(nomeReceita.str());
             pedido = true;
             cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             mostra_pilha((*receita).getPilha());
@@ -458,8 +463,13 @@ int main() {
 
                     if (comanda_colision.contains(worldPos) && pedido) {
                         if (!vendo_pedido) {
+                            stringstream rText;
+                            rText << receita->getNome() << endl;
+                            rText << retornaString(receita->getPilha());
                             vendo_pedido = true;
                             comanda_aberta.setPosition(sf::Vector2f(200, 300));
+                            recipeText.setString(rText.str());
+                            recipeText.setPosition(sf::Vector2f(220, 315));
                         } else {
                             vendo_pedido = false;
                         }
@@ -506,11 +516,11 @@ int main() {
             receita_montada = criaPilha();
 
             //restarts
-            stringstream nome;
-            nome << prefixo_receita;
-            nome << " ";
-            nome << id_receita;
-            receita = new Receita(nome.str());
+            stringstream nomeReceita;
+            nomeReceita << prefixo_receita;
+            nomeReceita << " ";
+            nomeReceita << id_receita;
+            receita = new Receita(nomeReceita.str());
             pedido = true;
             cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             mostra_pilha((*receita).getPilha());
@@ -543,11 +553,11 @@ int main() {
             receita_montada = criaPilha();
 
             //restarts
-            stringstream nome;
-            nome << prefixo_receita;
-            nome << " ";
-            nome << id_receita;
-            receita = new Receita(nome.str());
+            stringstream nomeReceita;
+            nomeReceita << prefixo_receita;
+            nomeReceita << " ";
+            nomeReceita << id_receita;
+            receita = new Receita(nomeReceita.str());
             pedido = true;
             cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             mostra_pilha((*receita).getPilha());
@@ -566,10 +576,15 @@ int main() {
 
                 if (vendo_pedido) {
                     win.draw(comanda_aberta);
+                    win.draw(recipeText);
                 }
             }
             for (sf::Sprite s : elements) {
                 win.draw(s);
+            }
+            if (pedido && vendo_pedido) {
+                win.draw(comanda_aberta);
+                win.draw(recipeText);
             }
             win.draw(timerText);
         }
