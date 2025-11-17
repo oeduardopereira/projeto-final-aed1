@@ -2,6 +2,7 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <unistd.h>
 #include <sstream>
 
 #include "Receita.h"
@@ -9,6 +10,9 @@
 #include "Ingrediente.h"
 #include "constantes.h"
 #include "utils.h"
+#include "heap.cpp"
+
+#define NUM_RECEITAS_INICIAIS 10
 
 using namespace std;
 
@@ -223,6 +227,15 @@ int main() {
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
+    HeapPrioridade fila_de_receitas;
+    int tick_counter = 0;
+
+    // Inicializa o Heap com 10 receitas
+    for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
+        string nome = "Receita-" + to_string(i + 1);
+        fila_de_receitas.inserir(new Receita(nome));
+    }
+
     sf::Font font;
     font.loadFromFile("./assets/font.ttf");
 
@@ -339,7 +352,8 @@ int main() {
                     pedido = true;
                     cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
                     mostra_pilha((*receita).getPilha());
-                }*/
+                }*/ 
+
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -476,6 +490,38 @@ int main() {
                         
                     }
                 }
+            }
+        }
+
+        for (Receita* r : fila_de_receitas.getElementos()) {
+            r->decrementarTempo(1); 
+        }
+
+        fila_de_receitas.rebalancear();
+
+        // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
+        while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
+            Receita* pronta = fila_de_receitas.extrairMinimo();
+            delete pronta; // Libera a memória da receita pronta
+        }
+
+        // D. Listar todas as receitas restantes em ordem de prioridade (menor tempo)
+        if (!fila_de_receitas.estaVazio()) {
+            
+            // 1. Criar uma cópia do vetor interno
+            vector<Receita*> receitas_restantes = fila_de_receitas.getElementos();
+
+            // 2. Ordenar a cópia pelo tempo restante (Min-Heap, então crescente)
+            sort(receitas_restantes.begin(), receitas_restantes.end(), 
+                [](Receita* a, Receita* b) {
+                    return a->getTempoConclusao() < b->getTempoConclusao();
+                });
+
+            // 3. Imprimir a lista ordenada
+            int rank = 1;
+            for (Receita* r : receitas_restantes) {
+                cout << "  " << rank++ << ". " << r->getNome() 
+                    << " (Tempo: " << r->getTempoConclusao() << "s)" << endl;
             }
         }
 
