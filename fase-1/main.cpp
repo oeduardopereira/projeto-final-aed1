@@ -227,15 +227,6 @@ int main() {
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
-    HeapPrioridade fila_de_receitas;
-    int tick_counter = 0;
-
-    // Inicializa o Heap com 10 receitas
-    for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
-        string nome = "Receita-" + to_string(i + 1);
-        fila_de_receitas.inserir(new Receita(nome));
-    }
-
     sf::Font font;
     font.loadFromFile("./assets/font.ttf");
 
@@ -260,13 +251,15 @@ int main() {
     sf::Vector2i cursorPosition = sf::Mouse::getPosition(win);
     sf::Vector2f worldPos = win.mapPixelToCoords(cursorPosition);
 
+    HeapPrioridade fila_de_receitas;
     int id_escolhido;
     int camada_atual;
     int id_receita = 0;
     Ingrediente ing;
     bool ok = true;
     string prefixo_receita = "Hamburguer";
-    Receita* receita;
+    Receita* currentRecipe;
+    int currentRecipeId;
     pilha* receita_montada;
     bool ing_picked = false;
     bool start = true;
@@ -282,17 +275,23 @@ int main() {
             receita_montada = criaPilha();
 
             //restarts
-            stringstream nomeReceita;
-            nomeReceita << prefixo_receita;
-            nomeReceita << " ";
-            nomeReceita << id_receita;
-            receita = new Receita(nomeReceita.str());
+            // Inicializa o Heap com 10 receitas
+            for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
+                string nome = "Receita-" + to_string(i + 1);
+                fila_de_receitas.inserir(new Receita(nome));
+            }
             pedido = true;
-            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
-            mostra_pilha((*receita).getPilha());
+            currentRecipe = fila_de_receitas.getElementos()[0];
+            for (Receita* r : fila_de_receitas.getElementos()) {
+                cout << endl << "Receita a ser feita: " << (*r).getNome() << endl << endl;
+                mostra_pilha((*r).getPilha());
+                cout << endl << "EM: " << r->getTempoConclusao() << " segundos!" << endl;
+            }
+            //cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+            //mostra_pilha((*receita).getPilha());
         }
         
-        if (id_receita >= 10) {
+        if (fila_de_receitas.estaVazio()) {
             ok = false;
             cout << "SCORE:" << score << "pts" << endl;
             break;
@@ -301,11 +300,17 @@ int main() {
         cursorPosition = sf::Mouse::getPosition(win);
         worldPos = win.mapPixelToCoords(cursorPosition);
         sf::Event e;
-        float elapsed = clock.getElapsedTime().asSeconds();
+        float elapsed;
+        float old = elapsed;
+        elapsed = clock.getElapsedTime().asSeconds();
 
         int minutes = static_cast<int>(elapsed) / 60;
         int secs = static_cast<int>(elapsed) % 60;
         int mili = static_cast<int>(elapsed) % 1000;
+
+        int oldminutes = static_cast<int>(old) / 60;
+        int oldsecs = static_cast<int>(old) % 60;
+        int oldmili = static_cast<int>(old) % 1000;
 
         stringstream ss;
         ss << minutes << ":" << secs << "   ";
@@ -318,42 +323,46 @@ int main() {
             }
 
             if (e.type == sf::Event::KeyPressed) {
-                /*if (e.key.code == sf::Keyboard::Enter) {
-                    //verification
-                    if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
-                        cout << "Parabéns! Você acertou a receita!" << endl;
-                        id_receita++;
-                    } else {
-                        cout << "Que pena! Você errou a receita!" << endl;
-                        ok = false;
-                        break;
-                    }
-
-                    //resets
-                    elements.clear();
-                    pedido = false;
-                    bread_type = -1;
-                    bread_base = false;
-                    layer_offset = 0.0f;
-                    delete receita;
-                    delete_pilha(receita_montada);
-
-                    id_escolhido = 0;
-                    camada_atual = 0;
-                    id_receita++;
-                    receita_montada = criaPilha();
-
-                    //restarts
-                    stringstream nome;
-                    nome << prefixo_receita;
-                    nome << " ";
-                    nome << id_receita;
-                    receita = new Receita(nome.str());
-                    pedido = true;
-                    cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
-                    mostra_pilha((*receita).getPilha());
-                }*/ 
-
+                if (e.key.code == sf::Keyboard::Num0 && fila_de_receitas.getSize() >= 0) {
+                    currentRecipe = fila_de_receitas.getElementos()[0];
+                    currentRecipeId = 0;
+                }
+                if (e.key.code == sf::Keyboard::Num1 && fila_de_receitas.getSize() >= 1) {
+                    currentRecipe = fila_de_receitas.getElementos()[1];
+                    currentRecipeId = 1;
+                }
+                if (e.key.code == sf::Keyboard::Num2 && fila_de_receitas.getSize() >= 2) {
+                    currentRecipe = fila_de_receitas.getElementos()[2];
+                    currentRecipeId = 2;
+                }
+                if (e.key.code == sf::Keyboard::Num3 && fila_de_receitas.getSize() >= 3) {
+                    currentRecipe = fila_de_receitas.getElementos()[3];
+                    currentRecipeId = 3;
+                }
+                if (e.key.code == sf::Keyboard::Num4 && fila_de_receitas.getSize() >= 4) {
+                    currentRecipe = fila_de_receitas.getElementos()[4];
+                    currentRecipeId = 4;
+                }
+                if (e.key.code == sf::Keyboard::Num5 && fila_de_receitas.getSize() >= 5) {
+                    currentRecipe = fila_de_receitas.getElementos()[5];
+                    currentRecipeId = 5;
+                }
+                if (e.key.code == sf::Keyboard::Num6 && fila_de_receitas.getSize() >= 6) {
+                    currentRecipe = fila_de_receitas.getElementos()[6];
+                    currentRecipeId = 6;
+                }
+                if (e.key.code == sf::Keyboard::Num7 && fila_de_receitas.getSize() >= 7) {
+                    currentRecipe = fila_de_receitas.getElementos()[7];
+                    currentRecipeId = 7;
+                }
+                if (e.key.code == sf::Keyboard::Num8 && fila_de_receitas.getSize() >= 8) {
+                    currentRecipe = fila_de_receitas.getElementos()[8];
+                    currentRecipeId = 8;
+                }
+                if (e.key.code == sf::Keyboard::Num9 && fila_de_receitas.getSize() >= 9) {
+                    currentRecipe = fila_de_receitas.getElementos()[9];
+                    currentRecipeId = 9;
+                }
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -478,8 +487,10 @@ int main() {
                     if (comanda_colision.contains(worldPos) && pedido) {
                         if (!vendo_pedido) {
                             stringstream rText;
-                            rText << receita->getNome() << endl;
-                            rText << retornaString(receita->getPilha());
+                            rText << currentRecipe->getNome() << endl;
+                            rText << retornaString(currentRecipe->getPilha());
+                            rText << currentRecipe->getTempoConclusao();
+                            rText << "s para a receita expirar...";
                             vendo_pedido = true;
                             comanda_aberta.setPosition(sf::Vector2f(200, 300));
                             recipeText.setString(rText.str());
@@ -494,7 +505,10 @@ int main() {
         }
 
         for (Receita* r : fila_de_receitas.getElementos()) {
-            r->decrementarTempo(1); 
+            if (secs < oldsecs) {
+                oldsecs = secs;
+            }
+            r->decrementarTempo((secs - oldsecs)); 
         }
 
         fila_de_receitas.rebalancear();
@@ -502,28 +516,44 @@ int main() {
         // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
         while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
             Receita* pronta = fila_de_receitas.extrairMinimo();
-            delete pronta; // Libera a memória da receita pronta
-        }
+            //delete pronta; // Libera a memória da receita pronta
 
-        // D. Listar todas as receitas restantes em ordem de prioridade (menor tempo)
-        if (!fila_de_receitas.estaVazio()) {
-            
-            // 1. Criar uma cópia do vetor interno
-            vector<Receita*> receitas_restantes = fila_de_receitas.getElementos();
-
-            // 2. Ordenar a cópia pelo tempo restante (Min-Heap, então crescente)
-            sort(receitas_restantes.begin(), receitas_restantes.end(), 
-                [](Receita* a, Receita* b) {
-                    return a->getTempoConclusao() < b->getTempoConclusao();
-                });
-
-            // 3. Imprimir a lista ordenada
-            int rank = 1;
-            for (Receita* r : receitas_restantes) {
-                cout << "  " << rank++ << ". " << r->getNome() 
-                    << " (Tempo: " << r->getTempoConclusao() << "s)" << endl;
+            cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
+            cout.flush();
+            //verification
+            if (pilhas_iguais((*pronta).getPilha(), receita_montada)) {
+                cout << "Parabéns! Você acertou a " << pronta->getNome() << "em cima do tempo!" << endl;
+                score++;
+            } else {
+                cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
+                //ok = false;
+                score--;
             }
+            for (Receita* r : fila_de_receitas.getElementos()) {
+                cout << r->getNome() << endl;
+            }
+
+            clock.restart();
+            vendo_pedido = false;
+            //resets
+            elements.clear();
+            pedido = false;
+            bread_type = -1;
+            bread_base = false;
+            layer_offset = 0.0f;
+            fila_de_receitas.deletar(0);
+            fila_de_receitas.rebalancear();
+            currentRecipe = fila_de_receitas.getElementos()[0];
+            delete_pilha(receita_montada);
+            id_escolhido = 0;
+            camada_atual = 0;
+            id_receita++;
+            receita_montada = criaPilha();
+
+            //restarts
+            pedido = true;
         }
+        
 
         if (ing_picked) {
             ing_picked = false;
@@ -532,12 +562,10 @@ int main() {
             camada_atual++;
         }
 
-        if (secs % 30 == 0 && secs != 0) {
-            cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
-            cout.flush();
+        if (camada_atual == (*currentRecipe).getQtdIngredientes()) {
             //verification
-            if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
-                cout << "Parabéns! Você acertou a receita!" << endl;
+            if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
+                cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
                 score++;
             } else {
                 cout << "Que pena! Você errou a receita!" << endl;
@@ -545,46 +573,15 @@ int main() {
                 score--;
             }
 
-            clock.restart();
-
-            //resets
-            elements.clear();
-            pedido = false;
-            bread_type = -1;
-            bread_base = false;
-            layer_offset = 0.0f;
-            delete receita;
-            delete_pilha(receita_montada);
-
-            id_escolhido = 0;
-            camada_atual = 0;
-            id_receita++;
-            receita_montada = criaPilha();
-
-            //restarts
-            stringstream nomeReceita;
-            nomeReceita << prefixo_receita;
-            nomeReceita << " ";
-            nomeReceita << id_receita;
-            receita = new Receita(nomeReceita.str());
-            pedido = true;
-            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
-            mostra_pilha((*receita).getPilha());
-        }
-
-        if (camada_atual == (*receita).getQtdIngredientes()) {
-            //verification
-            if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
-                cout << "Parabéns! Você acertou a receita!" << endl;
-                score++;
-            } else {
-                cout << "Que pena! Você errou a receita!" << endl;
-                //ok = false;
-                score--;
+            for (Receita* r : fila_de_receitas.getElementos()) {
+                cout << r->getNome() << endl;
             }
 
             clock.restart();
-
+            vendo_pedido = false;
+            fila_de_receitas.deletar(currentRecipeId);
+            fila_de_receitas.rebalancear();
+            currentRecipe = fila_de_receitas.getElementos()[0];
             //resets
             elements.clear();
             pedido = false;
@@ -592,21 +589,14 @@ int main() {
             bread_base = false;
             layer_offset = 0.0f;
 
-            delete receita;
+            //delete currentRecipe;
             delete_pilha(receita_montada);
             id_escolhido = 0;
             camada_atual = 0;
             receita_montada = criaPilha();
 
             //restarts
-            stringstream nomeReceita;
-            nomeReceita << prefixo_receita;
-            nomeReceita << " ";
-            nomeReceita << id_receita;
-            receita = new Receita(nomeReceita.str());
             pedido = true;
-            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
-            mostra_pilha((*receita).getPilha());
         } 
 
         win.clear(sf::Color::Black);

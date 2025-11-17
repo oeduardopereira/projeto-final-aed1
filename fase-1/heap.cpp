@@ -58,7 +58,6 @@ class HeapPrioridade {
 
         bool estaVazio() const { return elementos.empty(); }
         size_t getSize() const { return elementos.size(); }
-        
         void inserir(Receita* nova_receita) {
             if (nova_receita == nullptr) return;
             elementos.push_back(nova_receita);
@@ -89,5 +88,12 @@ class HeapPrioridade {
         // Executa a reorganização completa após o tempo ser decrementado
         void rebalancear() {
             build_heap();
+        }
+
+        Receita* deletar(int i) {
+            if (estaVazio()) return nullptr;
+            Receita* r = elementos[i];
+            elementos.erase(elementos.begin() + i);
+            return r;
         }
 };

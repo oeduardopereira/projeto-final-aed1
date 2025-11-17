@@ -134,7 +134,7 @@ string retornaString(pilha *p) {
         ok ? ss << ing.getNome() << endl : ss << "Erro ao desempilhar!" << endl;
     }
 
-    ss << "Fim da receita" << endl;
+    ss << "-- Fim da receita --" << endl;
 
     delete_pilha(p_aux);
 
