@@ -2,6 +2,7 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <sstream>
 
 #include "Receita.h"
 #include "pilha.h"
@@ -222,6 +223,16 @@ int main() {
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
+    sf::Font font;
+    font.loadFromFile("./assets/font.ttf");
+
+
+    sf::Text timerText;
+    timerText.setFont(font);
+    timerText.setCharacterSize(50);
+    timerText.setFillColor(sf::Color::Black);
+    timerText.setPosition(sf::Vector2f(75, 25));
+
     //Window loop
     bool pedido = false;
     int bread_type = -1;
@@ -241,6 +252,9 @@ int main() {
     pilha* receita_montada;
     bool ing_picked = false;
     bool start = true;
+    bool timeRunning = false;
+    int score = 0;
+    sf::Clock clock;
     while (win.isOpen()) {
         if (start) {
             start = false;
@@ -259,10 +273,25 @@ int main() {
             cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             mostra_pilha((*receita).getPilha());
         }
+        
+        if (id_receita >= 10) {
+            ok = false;
+            cout << "SCORE:" << score << "pts" << endl;
+            break;
+        }
         //Event Info Getting Section
         cursorPosition = sf::Mouse::getPosition(win);
         worldPos = win.mapPixelToCoords(cursorPosition);
         sf::Event e;
+        float elapsed = clock.getElapsedTime().asSeconds();
+
+        int minutes = static_cast<int>(elapsed) / 60;
+        int secs = static_cast<int>(elapsed) % 60;
+        int mili = static_cast<int>(elapsed) % 1000;
+
+        stringstream ss;
+        ss << minutes << ":" << secs << "   ";
+        timerText.setString(ss.str());
         //cout << worldPos.x << " | " << worldPos.y << endl;
         //Event loop
         while (win.pollEvent(e)) {
@@ -447,16 +476,58 @@ int main() {
             camada_atual++;
         }
 
+        if (secs % 30 == 0 && secs != 0) {
+            cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
+            cout.flush();
+            //verification
+            if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
+                cout << "Parabéns! Você acertou a receita!" << endl;
+                score++;
+            } else {
+                cout << "Que pena! Você errou a receita!" << endl;
+                //ok = false;
+                score--;
+            }
+
+            clock.restart();
+
+            //resets
+            elements.clear();
+            pedido = false;
+            bread_type = -1;
+            bread_base = false;
+            layer_offset = 0.0f;
+            delete receita;
+            delete_pilha(receita_montada);
+
+            id_escolhido = 0;
+            camada_atual = 0;
+            id_receita++;
+            receita_montada = criaPilha();
+
+            //restarts
+            stringstream nome;
+            nome << prefixo_receita;
+            nome << " ";
+            nome << id_receita;
+            receita = new Receita(nome.str());
+            pedido = true;
+            cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
+            mostra_pilha((*receita).getPilha());
+        }
+
         if (camada_atual == (*receita).getQtdIngredientes()) {
             //verification
             if (pilhas_iguais((*receita).getPilha(), receita_montada)) {
                 cout << "Parabéns! Você acertou a receita!" << endl;
-                id_receita++;
+                score++;
             } else {
                 cout << "Que pena! Você errou a receita!" << endl;
-                ok = false;
-                break;
+                //ok = false;
+                score--;
             }
+
+            clock.restart();
 
             //resets
             elements.clear();
@@ -485,7 +556,7 @@ int main() {
         win.clear(sf::Color::Black);
         if (ok) {
             if (pedido) {
-                 win.draw(cozinha);
+                win.draw(cozinha);
                 if (comanda_colision.contains(worldPos)) {
                     comanda.setColor(sf::Color::Blue);
                 } else {
@@ -500,6 +571,7 @@ int main() {
             for (sf::Sprite s : elements) {
                 win.draw(s);
             }
+            win.draw(timerText);
         }
         
         win.display();
