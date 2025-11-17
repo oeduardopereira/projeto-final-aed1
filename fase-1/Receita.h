@@ -23,6 +23,7 @@ class Receita {
         vector<int> receitaPorIds;
         bool pronta;
         int qtd_ingredientes;
+        int tempo_conclusao_segs;
 
         void geraReceitaIds();
         void mapeiaIngredientePorId();
@@ -33,11 +34,21 @@ class Receita {
             delete_pilha(pilha_ingredientes);
         }
         int getQtdIngredientes();
+        int getTempoConclusao();
         int getReceitaPorIds(int pos) const; 
         Ingrediente getIngredientes(int pos) const;
         string getNome() const;
         pilha* getPilha() const;
         bool getPronta() const;
+
+        void decrementarTempo(int segundos) {
+            this->tempo_conclusao_segs -= segundos;
+            if (this->tempo_conclusao_segs < 0) {
+                this->tempo_conclusao_segs = 0;
+            }
+        }
+    bool estaPronta() const { return this->tempo_conclusao_segs == 0; }
+
 };
 
 int Receita::id_counter = 0;
@@ -135,6 +146,7 @@ void Receita::mapeiaIngredientePorId() {
 Receita::Receita (string _nome) : id(id_counter++) {
     this->nome = _nome;
     this->pronta = false;
+    this->tempo_conclusao_segs = geraValorAleatorio(MIN_TEMPO, MAX_TEMPO);
     pilha_ingredientes = criaPilha();
     geraReceitaIds();
     mapeiaIngredientePorId();
@@ -164,5 +176,8 @@ int Receita::getQtdIngredientes() {
     return this->qtd_ingredientes;
 }
 
+int Receita::getTempoConclusao() {
+    return this->tempo_conclusao_segs;
+}
 
 #endif

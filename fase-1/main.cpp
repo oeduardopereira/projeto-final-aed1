@@ -2,15 +2,79 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <unistd.h>
 
 #include "Receita.h"
 #include "pilha.h"
 #include "Ingrediente.h"
 #include "constantes.h"
 #include "utils.h"
+#include "heap.cpp"
 
 using namespace std;
 
+
+void testar_heap_prioridade() {
+    srand(time(0)); // Inicializa o gerador de números aleatórios
+    HeapPrioridade fila_de_receitas;
+    const int NUM_RECEITAS_INICIAIS = 10;
+    const int TEMPO_TICK_SEGUNDOS = 5;
+    int tick_counter = 0;
+
+    cout << "--- 🍳 INICIALIZANDO HEAP DE RECEITAS ---" << endl;
+
+    // 1. Inicializa o Heap com 10 receitas
+    for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
+        string nome = "Receita-" + to_string(i + 1);
+        fila_de_receitas.inserir(new Receita(nome));
+    }
+
+    cout << "\n--- 🎮 INICIANDO SIMULAÇÃO ---" << endl;
+
+    // 2. Loop principal
+    while (!fila_de_receitas.estaVazio()) {
+        tick_counter++;
+        cout << "\n=======================================================" << endl;
+        cout << "TICK #" << tick_counter << " | Passagem de " << TEMPO_TICK_SEGUNDOS << " segundos simulados." << endl;
+        cout << "=======================================================" << endl;
+
+        // A. Diminuir o tempo restante de TODAS as receitas
+        for (Receita* r : fila_de_receitas.getElementos()) {
+            r->decrementarTempo(TEMPO_TICK_SEGUNDOS); 
+        }
+
+        // B. Reorganizar o Heap (Regra: a cada 5 segundos)
+        // Isso garante que a nova receita de menor tempo vá para a raiz.
+        fila_de_receitas.rebalancear();
+
+        // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
+        while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->estaPronta()) {
+            Receita* pronta = fila_de_receitas.extrairMinimo();
+            cout << ">>> ✅ RECEITA CONCLUÍDA! " << pronta->getNome() << " extraída do Heap." << endl;
+            delete pronta; // Libera a memória da receita pronta
+        }
+
+        // D. Mostrar o estado atual do Heap
+        if (!fila_de_receitas.estaVazio()) {
+            Receita* proxima = fila_de_receitas.olharMinimo();
+            cout << ">>> ⏳ PRÓXIMA PRIORIDADE (RAIZ DO HEAP): " << proxima->getNome() 
+                    << " (Tempo Restante: " << proxima->getTempoConclusao() << "s)" << endl;
+            cout << ">>> Receitas restantes no Heap: " << fila_de_receitas.getSize() << endl;
+        }
+        
+        // Simulação de pausa para o terminal
+        usleep(500000); // Pausa de 0.5 segundo para visualização
+    }
+
+    cout << "\n--- 🛑 SIMULAÇÃO CONCLUÍDA: Todas as receitas foram feitas. ---" << endl;
+}
+
+int main() {
+    testar_heap_prioridade();
+    return 0;
+}
+
+/*
 int main() {
     vector<sf::Sprite> elements;
 
@@ -305,7 +369,10 @@ int main() {
                     pedido = true;
                     cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
                     mostra_pilha((*receita).getPilha());
-                }*/
+                }*/ /*
+
+
+                +++++++++++_++++++++++++#####################
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -505,3 +572,4 @@ int main() {
         win.display();
     }
 }
+    */
