@@ -47,7 +47,7 @@ class Receita {
                 this->tempo_conclusao_segs = 0;
             }
         }
-    bool estaPronta() const { return this->tempo_conclusao_segs == 0; }
+    bool expirou() const { return this->tempo_conclusao_segs == 0; }
 
 };
 

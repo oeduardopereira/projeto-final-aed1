@@ -11,83 +11,10 @@
 #include "utils.h"
 #include "heap.cpp"
 
+#define NUM_RECEITAS_INICIAIS 10
+
 using namespace std;
 
-
-void testar_heap_prioridade() {
-    srand(time(0)); // Inicializa o gerador de números aleatórios
-    HeapPrioridade fila_de_receitas;
-    const int NUM_RECEITAS_INICIAIS = 10;
-    const int TEMPO_TICK_SEGUNDOS = 5;
-    int tick_counter = 0;
-
-    cout << "--- 🍳 INICIALIZANDO HEAP DE RECEITAS ---" << endl;
-
-    // 1. Inicializa o Heap com 10 receitas
-    for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
-        string nome = "Receita-" + to_string(i + 1);
-        fila_de_receitas.inserir(new Receita(nome));
-    }
-
-    cout << "\n--- 🎮 INICIANDO SIMULAÇÃO ---" << endl;
-
-    // 2. Loop principal
-    while (!fila_de_receitas.estaVazio()) {
-        tick_counter++;
-        cout << "\n=======================================================" << endl;
-        cout << "TICK #" << tick_counter << " | Passagem de " << TEMPO_TICK_SEGUNDOS << " segundos simulados." << endl;
-        cout << "=======================================================" << endl;
-
-        // A. Diminuir o tempo restante de TODAS as receitas
-        for (Receita* r : fila_de_receitas.getElementos()) {
-            r->decrementarTempo(TEMPO_TICK_SEGUNDOS); 
-        }
-
-        // B. Reorganizar o Heap (Regra: a cada 5 segundos)
-        // Isso garante que a nova receita de menor tempo vá para a raiz.
-        fila_de_receitas.rebalancear();
-
-        // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
-        while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->estaPronta()) {
-            Receita* pronta = fila_de_receitas.extrairMinimo();
-            cout << ">>> ✅ RECEITA CONCLUÍDA! " << pronta->getNome() << " extraída do Heap." << endl;
-            delete pronta; // Libera a memória da receita pronta
-        }
-
-        // D. Listar todas as receitas restantes em ordem de prioridade (menor tempo)
-        if (!fila_de_receitas.estaVazio()) {
-            cout << "\n--- 📋 FILA DE PRIORIDADE COMPLETA (Menor Tempo Primeiro) ---" << endl;
-            
-            // 1. Criar uma cópia do vetor interno
-            vector<Receita*> receitas_restantes = fila_de_receitas.getElementos();
-
-            // 2. Ordenar a cópia pelo tempo restante (Min-Heap, então crescente)
-            sort(receitas_restantes.begin(), receitas_restantes.end(), 
-                [](Receita* a, Receita* b) {
-                    return a->getTempoConclusao() < b->getTempoConclusao();
-                });
-
-            // 3. Imprimir a lista ordenada
-            int rank = 1;
-            for (Receita* r : receitas_restantes) {
-                cout << "  " << rank++ << ". " << r->getNome() 
-                    << " (Tempo: " << r->getTempoConclusao() << "s)" << endl;
-            }
-        }
-        
-        // Simulação de pausa para o terminal
-        usleep(500000); // Pausa de 0.5 segundo para visualização
-    }
-
-    cout << "\n--- 🛑 SIMULAÇÃO CONCLUÍDA: Todas as receitas foram feitas. ---" << endl;
-}
-
-int main() {
-    testar_heap_prioridade();
-    return 0;
-}
-
-/*
 int main() {
     vector<sf::Sprite> elements;
 
@@ -299,6 +226,15 @@ int main() {
     sf::FloatRect topo_pao_colision = topo_pao.getGlobalBounds();
     sf::Color originaltopo_pao = topo_pao.getColor();
 
+    HeapPrioridade fila_de_receitas;
+    int tick_counter = 0;
+
+    // Inicializa o Heap com 10 receitas
+    for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
+        string nome = "Receita-" + to_string(i + 1);
+        fila_de_receitas.inserir(new Receita(nome));
+    }
+
     //Window loop
     bool pedido = false;
     int bread_type = -1;
@@ -382,10 +318,8 @@ int main() {
                     pedido = true;
                     cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
                     mostra_pilha((*receita).getPilha());
-                }*/ /*
+                }*/ 
 
-
-                +++++++++++_++++++++++++#####################
             }
 
             if (e.type == sf::Event::MouseButtonPressed) {
@@ -520,6 +454,38 @@ int main() {
             }
         }
 
+        for (Receita* r : fila_de_receitas.getElementos()) {
+            r->decrementarTempo(1); 
+        }
+
+        fila_de_receitas.rebalancear();
+
+        // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
+        while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
+            Receita* pronta = fila_de_receitas.extrairMinimo();
+            delete pronta; // Libera a memória da receita pronta
+        }
+
+        // D. Listar todas as receitas restantes em ordem de prioridade (menor tempo)
+        if (!fila_de_receitas.estaVazio()) {
+            
+            // 1. Criar uma cópia do vetor interno
+            vector<Receita*> receitas_restantes = fila_de_receitas.getElementos();
+
+            // 2. Ordenar a cópia pelo tempo restante (Min-Heap, então crescente)
+            sort(receitas_restantes.begin(), receitas_restantes.end(), 
+                [](Receita* a, Receita* b) {
+                    return a->getTempoConclusao() < b->getTempoConclusao();
+                });
+
+            // 3. Imprimir a lista ordenada
+            int rank = 1;
+            for (Receita* r : receitas_restantes) {
+                cout << "  " << rank++ << ". " << r->getNome() 
+                    << " (Tempo: " << r->getTempoConclusao() << "s)" << endl;
+            }
+        }
+
         if (ing_picked) {
             ing_picked = false;
             ing = Ingrediente(INGREDIENTES_IDS.at(id_escolhido), camada_atual, id_escolhido);
@@ -585,4 +551,3 @@ int main() {
         win.display();
     }
 }
-    */
