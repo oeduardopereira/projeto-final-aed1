@@ -54,12 +54,25 @@ void testar_heap_prioridade() {
             delete pronta; // Libera a memória da receita pronta
         }
 
-        // D. Mostrar o estado atual do Heap
+        // D. Listar todas as receitas restantes em ordem de prioridade (menor tempo)
         if (!fila_de_receitas.estaVazio()) {
-            Receita* proxima = fila_de_receitas.olharMinimo();
-            cout << ">>> ⏳ PRÓXIMA PRIORIDADE (RAIZ DO HEAP): " << proxima->getNome() 
-                    << " (Tempo Restante: " << proxima->getTempoConclusao() << "s)" << endl;
-            cout << ">>> Receitas restantes no Heap: " << fila_de_receitas.getSize() << endl;
+            cout << "\n--- 📋 FILA DE PRIORIDADE COMPLETA (Menor Tempo Primeiro) ---" << endl;
+            
+            // 1. Criar uma cópia do vetor interno
+            vector<Receita*> receitas_restantes = fila_de_receitas.getElementos();
+
+            // 2. Ordenar a cópia pelo tempo restante (Min-Heap, então crescente)
+            sort(receitas_restantes.begin(), receitas_restantes.end(), 
+                [](Receita* a, Receita* b) {
+                    return a->getTempoConclusao() < b->getTempoConclusao();
+                });
+
+            // 3. Imprimir a lista ordenada
+            int rank = 1;
+            for (Receita* r : receitas_restantes) {
+                cout << "  " << rank++ << ". " << r->getNome() 
+                    << " (Tempo: " << r->getTempoConclusao() << "s)" << endl;
+            }
         }
         
         // Simulação de pausa para o terminal
