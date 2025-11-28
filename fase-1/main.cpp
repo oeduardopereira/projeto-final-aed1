@@ -16,6 +16,15 @@
 
 using namespace std;
 
+string getRecipeStr(Receita* currentRecipe) {
+    stringstream rText;
+    rText << currentRecipe->getNome() << endl;
+    rText << retornaString(currentRecipe->getPilha());
+    rText << currentRecipe->getTempoConclusao();
+    rText << "s para a receita expirar...";
+    return rText.str();
+}
+
 int main() {
     vector<sf::Sprite> elements;
 
@@ -230,17 +239,38 @@ int main() {
     sf::Font font;
     font.loadFromFile("./assets/font.ttf");
 
+    sf::Font pixelate;
+    pixelate.loadFromFile("./assets/pixelate.ttf");
+
+    sf::Font handmade;
+    handmade.loadFromFile("./assets/handmade.ttf");
+
 
     sf::Text timerText;
-    timerText.setFont(font);
+    timerText.setFont(pixelate);
     timerText.setCharacterSize(50);
     timerText.setFillColor(sf::Color::Black);
     timerText.setPosition(sf::Vector2f(75, 25));
 
     sf::Text recipeText;
-    recipeText.setFont(font);
+    recipeText.setFont(handmade);
     recipeText.setCharacterSize(16);
     recipeText.setFillColor(sf::Color::Black);
+
+    sf::Text titleText;
+    titleText.setFont(font);
+    titleText.setCharacterSize(16);
+    titleText.setFillColor(sf::Color::Black);
+
+    sf::Cursor cursorMao;
+    if (cursorMao.loadFromSystem(sf::Cursor::Hand)) {
+        std::cout << "Cursor Mao carregado." << std::endl;
+    }
+
+    sf::Cursor cursorSeta;
+    if (cursorSeta.loadFromSystem(sf::Cursor::Arrow)) {
+        std::cout << "Cursor Seta carregado." << std::endl;
+    }
 
     //Window loop
     bool pedido = false;
@@ -486,14 +516,9 @@ int main() {
 
                     if (comanda_colision.contains(worldPos) && pedido) {
                         if (!vendo_pedido) {
-                            stringstream rText;
-                            rText << currentRecipe->getNome() << endl;
-                            rText << retornaString(currentRecipe->getPilha());
-                            rText << currentRecipe->getTempoConclusao();
-                            rText << "s para a receita expirar...";
+                            
                             vendo_pedido = true;
                             comanda_aberta.setPosition(sf::Vector2f(200, 300));
-                            recipeText.setString(rText.str());
                             recipeText.setPosition(sf::Vector2f(220, 315));
                         } else {
                             vendo_pedido = false;
@@ -515,6 +540,7 @@ int main() {
 
         // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
         while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
+            
             Receita* pronta = fila_de_receitas.extrairMinimo();
             //delete pronta; // Libera a memória da receita pronta
 
@@ -533,8 +559,9 @@ int main() {
                 cout << r->getNome() << endl;
             }
 
+
             clock.restart();
-            vendo_pedido = false;
+            //vendo_pedido = false;
             //resets
             elements.clear();
             pedido = false;
@@ -543,6 +570,13 @@ int main() {
             layer_offset = 0.0f;
             fila_de_receitas.deletar(0);
             fila_de_receitas.rebalancear();
+
+            if (fila_de_receitas.estaVazio()) {
+                ok = false;
+                cout << "SCORE:" << score << "pts" << endl;
+                break;
+            }
+
             currentRecipe = fila_de_receitas.getElementos()[0];
             delete_pilha(receita_montada);
             id_escolhido = 0;
@@ -553,6 +587,12 @@ int main() {
             //restarts
             pedido = true;
         }
+
+        if (fila_de_receitas.estaVazio()) {
+            ok = false;
+            cout << "SCORE:" << score << "pts" << endl;
+            break;
+        }
         
 
         if (ing_picked) {
@@ -561,6 +601,16 @@ int main() {
             empilha(receita_montada, ing);
             camada_atual++;
         }
+
+        if (alface_colision.contains(worldPos) || bacon_colision.contains(worldPos) || brioche_colision.contains(worldPos)
+            || pao_colision.contains(worldPos) || cebola_car_colision.contains(worldPos) || cebola_nor_colision.contains(worldPos)
+            || comanda_colision.contains(worldPos) || frango_colision.contains(worldPos) || hamburguer_bov_colision.contains(worldPos)
+            || hamburguer_veg_colision.contains(worldPos) || ketchup_colision.contains(worldPos) || mustard_colision.contains(worldPos)
+            || tomate_colision.contains(worldPos)) {
+            win.setMouseCursor(cursorMao);
+        } else {
+            win.setMouseCursor(cursorSeta);
+        }        
 
         if (camada_atual == (*currentRecipe).getQtdIngredientes()) {
             //verification
@@ -578,7 +628,7 @@ int main() {
             }
 
             clock.restart();
-            vendo_pedido = false;
+            //vendo_pedido = false;
             fila_de_receitas.deletar(currentRecipeId);
             fila_de_receitas.rebalancear();
             currentRecipe = fila_de_receitas.getElementos()[0];
@@ -611,6 +661,7 @@ int main() {
                 win.draw(comanda);
 
                 if (vendo_pedido) {
+                    recipeText.setString(getRecipeStr(currentRecipe));
                     win.draw(comanda_aberta);
                     win.draw(recipeText);
                 }
@@ -619,10 +670,15 @@ int main() {
                 win.draw(s);
             }
             if (pedido && vendo_pedido) {
+                recipeText.setString(getRecipeStr(currentRecipe));
                 win.draw(comanda_aberta);
                 win.draw(recipeText);
             }
             win.draw(timerText);
+        } else {
+            cout << "Game over" << endl;
+            cout << score << endl;
+            break;
         }
         
         win.display();
