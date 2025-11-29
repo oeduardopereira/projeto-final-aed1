@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <vector>
 #include <unistd.h>
 #include <sstream>
@@ -294,8 +295,12 @@ int main() {
     bool ing_picked = false;
     bool start = true;
     bool timeRunning = false;
+    bool fTimeSet = false;
     int score = 0;
     sf::Clock clock;
+
+    float Felapsed;
+    int Fminutes, Fsecs, Fmili;
     while (win.isOpen()) {
         if (start) {
             start = false;
@@ -324,7 +329,7 @@ int main() {
         if (fila_de_receitas.estaVazio()) {
             ok = false;
             cout << "SCORE:" << score << "pts" << endl;
-            break;
+            //break;
         }
         //Event Info Getting Section
         cursorPosition = sf::Mouse::getPosition(win);
@@ -542,7 +547,7 @@ int main() {
         while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
             
             Receita* pronta = fila_de_receitas.extrairMinimo();
-            //delete pronta; // Libera a memória da receita pronta
+            // Libera a memória da receita pronta
 
             cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
             cout.flush();
@@ -555,12 +560,24 @@ int main() {
                 //ok = false;
                 score--;
             }
-            for (Receita* r : fila_de_receitas.getElementos()) {
-                cout << r->getNome() << endl;
+            
+            int rId = 0;
+            if (!fila_de_receitas.estaVazio()) {
+                cout << "inside while loop" << endl;
+                for (Receita* r : fila_de_receitas.getElementos()) {
+                    cout <<  rId << ". " << r->getNome() << endl;
+                    rId++;
+                }
+            } else {
+                cout << "inside ver" << endl;
+                ok = false;
+                cout << "SCORE:" << score << "pts" << endl;
+                break;
             }
+            
 
 
-            clock.restart();
+            //clock.restart();
             //vendo_pedido = false;
             //resets
             elements.clear();
@@ -568,17 +585,13 @@ int main() {
             bread_type = -1;
             bread_base = false;
             layer_offset = 0.0f;
-            fila_de_receitas.deletar(0);
+            //fila_de_receitas.deletar(0);
             fila_de_receitas.rebalancear();
-
-            if (fila_de_receitas.estaVazio()) {
-                ok = false;
-                cout << "SCORE:" << score << "pts" << endl;
-                break;
+            if (currentRecipe == pronta) {
+                currentRecipe = fila_de_receitas.getElementos()[0];
             }
-
-            currentRecipe = fila_de_receitas.getElementos()[0];
             delete_pilha(receita_montada);
+            delete pronta; 
             id_escolhido = 0;
             camada_atual = 0;
             id_receita++;
@@ -589,9 +602,10 @@ int main() {
         }
 
         if (fila_de_receitas.estaVazio()) {
+            cout << "independent ver" << endl;
             ok = false;
             cout << "SCORE:" << score << "pts" << endl;
-            break;
+            //break;
         }
         
 
@@ -623,11 +637,14 @@ int main() {
                 score--;
             }
 
+            int rId = 0;
+            cout << "Inside verification clause" << endl;
             for (Receita* r : fila_de_receitas.getElementos()) {
-                cout << r->getNome() << endl;
+                cout <<  rId << ". " << r->getNome() << endl;
+                rId++;
             }
 
-            clock.restart();
+            //clock.restart();
             //vendo_pedido = false;
             fila_de_receitas.deletar(currentRecipeId);
             fila_de_receitas.rebalancear();
@@ -676,11 +693,26 @@ int main() {
             }
             win.draw(timerText);
         } else {
-            cout << "Game over" << endl;
-            cout << score << endl;
-            break;
+            if (!fTimeSet) {
+                Felapsed = clock.getElapsedTime().asSeconds();
+
+                Fminutes = static_cast<int>(elapsed) / 60;
+                Fsecs = static_cast<int>(elapsed) % 60;
+                Fmili = static_cast<int>(elapsed) % 1000;
+                fTimeSet = true;
+            }
+
+            clock.restart();
+
+            cout << "Game over | SCORE: " << score << " | FINAL TIME: " << Fminutes 
+            << ":" << Fsecs << "." << Fmili << "\r";
+            //break;
         }
         
         win.display();
     }
+
+    cout << "Out of the windowloop" << endl;
+    free(currentRecipe);
+    free(receita_montada);
 }
