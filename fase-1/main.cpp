@@ -290,7 +290,7 @@ int main() {
     bool ok = true;
     string prefixo_receita = "Hamburguer";
     Receita* currentRecipe;
-    int currentRecipeId;
+    int currentRecipeId = 0;
     pilha* receita_montada;
     bool ing_picked = false;
     bool start = true;
@@ -358,45 +358,22 @@ int main() {
             }
 
             if (e.type == sf::Event::KeyPressed) {
-                if (e.key.code == sf::Keyboard::Num0 && fila_de_receitas.getSize() >= 0) {
-                    currentRecipe = fila_de_receitas.getElementos()[0];
-                    currentRecipeId = 0;
+                if (e.key.code == sf::Keyboard::Right && !fila_de_receitas.estaVazio()) {
+                    if (currentRecipeId < fila_de_receitas.getSize() - 1) {
+                        currentRecipeId++;
+                    } else {
+                        currentRecipeId = 0;
+                    }
+                    currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
                 }
-                if (e.key.code == sf::Keyboard::Num1 && fila_de_receitas.getSize() >= 1) {
-                    currentRecipe = fila_de_receitas.getElementos()[1];
-                    currentRecipeId = 1;
-                }
-                if (e.key.code == sf::Keyboard::Num2 && fila_de_receitas.getSize() >= 2) {
-                    currentRecipe = fila_de_receitas.getElementos()[2];
-                    currentRecipeId = 2;
-                }
-                if (e.key.code == sf::Keyboard::Num3 && fila_de_receitas.getSize() >= 3) {
-                    currentRecipe = fila_de_receitas.getElementos()[3];
-                    currentRecipeId = 3;
-                }
-                if (e.key.code == sf::Keyboard::Num4 && fila_de_receitas.getSize() >= 4) {
-                    currentRecipe = fila_de_receitas.getElementos()[4];
-                    currentRecipeId = 4;
-                }
-                if (e.key.code == sf::Keyboard::Num5 && fila_de_receitas.getSize() >= 5) {
-                    currentRecipe = fila_de_receitas.getElementos()[5];
-                    currentRecipeId = 5;
-                }
-                if (e.key.code == sf::Keyboard::Num6 && fila_de_receitas.getSize() >= 6) {
-                    currentRecipe = fila_de_receitas.getElementos()[6];
-                    currentRecipeId = 6;
-                }
-                if (e.key.code == sf::Keyboard::Num7 && fila_de_receitas.getSize() >= 7) {
-                    currentRecipe = fila_de_receitas.getElementos()[7];
-                    currentRecipeId = 7;
-                }
-                if (e.key.code == sf::Keyboard::Num8 && fila_de_receitas.getSize() >= 8) {
-                    currentRecipe = fila_de_receitas.getElementos()[8];
-                    currentRecipeId = 8;
-                }
-                if (e.key.code == sf::Keyboard::Num9 && fila_de_receitas.getSize() >= 9) {
-                    currentRecipe = fila_de_receitas.getElementos()[9];
-                    currentRecipeId = 9;
+
+                if (e.key.code == sf::Keyboard::Left && !fila_de_receitas.estaVazio()) {
+                    if (currentRecipeId > 0) {
+                        currentRecipeId--;
+                    } else {
+                        currentRecipeId = fila_de_receitas.getSize() - 1;
+                    }
+                    currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
                 }
             }
 
