@@ -72,9 +72,10 @@ int main() {
     sf::Sprite tomate;
     tomate.setTexture(tomate_texture);
     tomate.setPosition(sf::Vector2f(90, 450));
-    tomate.setScale(sf::Vector2f(0.25f, 0.25f));
+    tomate.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect tomate_colision = tomate.getGlobalBounds();
     sf::Color originalTomate = tomate.getColor();
+    tomate.setColor(originalTomate);
 
     sf::Texture alface_texture;
     if (!alface_texture.loadFromFile("./sprites/Alface.png")) {
@@ -104,7 +105,7 @@ int main() {
     }
     sf::Sprite brioche;
     brioche.setTexture(brioche_texture);
-    brioche.setPosition(sf::Vector2f(300, 50));
+    brioche.setPosition(sf::Vector2f(310, 45));
     brioche.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect brioche_colision = brioche.getGlobalBounds();
     sf::Color originalBrioche = brioche.getColor();
@@ -135,7 +136,7 @@ int main() {
     }
     sf::Sprite cebola_car;
     cebola_car.setTexture(cebola_car_texture);
-    cebola_car.setPosition(sf::Vector2f(400, 50));
+    cebola_car.setPosition(sf::Vector2f(425, 50));
     cebola_car.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect cebola_car_colision = cebola_car.getGlobalBounds();
     sf::Color originalCebola_Car = cebola_car.getColor();
@@ -146,7 +147,7 @@ int main() {
     }
     sf::Sprite cebola_nor;
     cebola_nor.setTexture(cebola_nor_texture);
-    cebola_nor.setPosition(sf::Vector2f(500, 50));
+    cebola_nor.setPosition(sf::Vector2f(525, 50));
     cebola_nor.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect cebola_nor_colision = cebola_nor.getGlobalBounds();
     sf::Color originalCebola_Nor = cebola_nor.getColor();
@@ -157,7 +158,7 @@ int main() {
     }
     sf::Sprite frango;
     frango.setTexture(frango_texture);
-    frango.setPosition(sf::Vector2f(660, 475));
+    frango.setPosition(sf::Vector2f(700, 475));
     frango.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect frango_colision = frango.getGlobalBounds();
     sf::Color originalFrango = frango.getColor();
@@ -168,7 +169,7 @@ int main() {
     }
     sf::Sprite hamburguer_bov;
     hamburguer_bov.setTexture(hamburguer_bov_texture);
-    hamburguer_bov.setPosition(sf::Vector2f(660, 325));
+    hamburguer_bov.setPosition(sf::Vector2f(700, 325));
     hamburguer_bov.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect hamburguer_bov_colision = hamburguer_bov.getGlobalBounds();
     sf::Color originalHamburguer_Bov = hamburguer_bov.getColor();
@@ -179,7 +180,7 @@ int main() {
     }
     sf::Sprite hamburguer_veg;
     hamburguer_veg.setTexture(hamburguer_veg_texture);
-    hamburguer_veg.setPosition(sf::Vector2f(650, 175));
+    hamburguer_veg.setPosition(sf::Vector2f(690, 175));
     hamburguer_veg.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect hamburguer_veg_colision = hamburguer_veg.getGlobalBounds();
     sf::Color originalHamburguer_Veg = hamburguer_veg.getColor();
@@ -190,7 +191,7 @@ int main() {
     }
     sf::Sprite ketchup;
     ketchup.setTexture(ketchup_texture);
-    ketchup.setPosition(sf::Vector2f(300, 300));
+    ketchup.setPosition(sf::Vector2f(310, 290));
     ketchup.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect ketchup_colision = ketchup.getGlobalBounds();
     sf::Color originalKetchup = ketchup.getColor();
@@ -201,7 +202,7 @@ int main() {
     }
     sf::Sprite mustard;
     mustard.setTexture(mustard_texture);
-    mustard.setPosition(sf::Vector2f(400, 300));
+    mustard.setPosition(sf::Vector2f(420, 290));
     mustard.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect mustard_colision = mustard.getGlobalBounds();
     sf::Color originalMustard = mustard.getColor();
@@ -212,7 +213,7 @@ int main() {
     }
     sf::Sprite pao;
     pao.setTexture(pao_texture);
-    pao.setPosition(sf::Vector2f(500, 300));
+    pao.setPosition(sf::Vector2f(525, 290));
     pao.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect pao_colision = pao.getGlobalBounds();
     sf::Color originalpao = pao.getColor();
@@ -610,7 +611,6 @@ int main() {
                 score++;
             } else {
                 cout << "Que pena! Você errou a receita!" << endl;
-                //ok = false;
                 score--;
             }
 
@@ -621,8 +621,6 @@ int main() {
                 rId++;
             }
 
-            //clock.restart();
-            //vendo_pedido = false;
             fila_de_receitas.deletar(currentRecipeId);
             fila_de_receitas.rebalancear();
             currentRecipe = fila_de_receitas.getElementos()[0];
@@ -645,6 +643,7 @@ int main() {
 
         win.clear(sf::Color::Black);
         if (ok) {
+
             if (pedido) {
                 win.draw(cozinha);
                 if (comanda_colision.contains(worldPos)) {
@@ -685,7 +684,6 @@ int main() {
             << ":" << Fsecs << "." << Fmili << "\r";
             //break;
         }
-        
         win.display();
     }
 
