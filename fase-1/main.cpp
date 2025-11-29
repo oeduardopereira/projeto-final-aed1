@@ -554,8 +554,6 @@ int main() {
                 break;
             }
             
-
-
             //clock.restart();
             //vendo_pedido = false;
             //resets
@@ -661,9 +659,11 @@ int main() {
                     win.draw(recipeText);
                 }
             }
+
             for (sf::Sprite s : elements) {
                 win.draw(s);
             }
+
             if (pedido && vendo_pedido) {
                 string recText = getRecipeStr(currentRecipe);
                 recipeText.setString(sf::String::fromUtf8(recText.begin(), recText.end()));
