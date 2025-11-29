@@ -39,7 +39,7 @@ int main() {
 
     sf::Sprite comanda;
     comanda.setTexture(comanda_texture);
-    comanda.setPosition(sf::Vector2f(100, 500));
+    comanda.setPosition(sf::Vector2f(650, 15));
     comanda.setScale(sf::Vector2f(0.5f, 0.5f));
     sf::FloatRect comanda_colision = comanda.getGlobalBounds();
     sf::Color originalComanda = comanda.getColor();
@@ -501,8 +501,9 @@ int main() {
                         if (!vendo_pedido) {
                             
                             vendo_pedido = true;
-                            comanda_aberta.setPosition(sf::Vector2f(200, 300));
-                            recipeText.setPosition(sf::Vector2f(220, 315));
+                            sf::Vector2f cmd_pos = comanda.getPosition();
+                            comanda_aberta.setPosition(sf::Vector2f(cmd_pos.x - 100, cmd_pos.y));
+                            recipeText.setPosition(sf::Vector2f(cmd_pos.x - 85, cmd_pos.y + 10));
                         } else {
                             vendo_pedido = false;
                         }
@@ -654,7 +655,8 @@ int main() {
                 win.draw(comanda);
 
                 if (vendo_pedido) {
-                    recipeText.setString(getRecipeStr(currentRecipe));
+                    string recText = getRecipeStr(currentRecipe);
+                    recipeText.setString(sf::String::fromUtf8(recText.begin(), recText.end()));
                     win.draw(comanda_aberta);
                     win.draw(recipeText);
                 }
@@ -663,7 +665,8 @@ int main() {
                 win.draw(s);
             }
             if (pedido && vendo_pedido) {
-                recipeText.setString(getRecipeStr(currentRecipe));
+                string recText = getRecipeStr(currentRecipe);
+                recipeText.setString(sf::String::fromUtf8(recText.begin(), recText.end()));
                 win.draw(comanda_aberta);
                 win.draw(recipeText);
             }
