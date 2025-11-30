@@ -12,6 +12,7 @@
 #include "constantes.h"
 #include "utils.h"
 #include "heap.cpp"
+#include <iomanip>
 
 #define NUM_RECEITAS_INICIAIS 10
 
@@ -196,6 +197,17 @@ int main() {
     sf::FloatRect ketchup_colision = ketchup.getGlobalBounds();
     sf::Color originalKetchup = ketchup.getColor();
 
+    sf::Texture ketchup_sauce_texture;
+    if (!ketchup_sauce_texture.loadFromFile("./sprites/ketchup_sauce.png")) {
+        return -1;
+    }
+    sf::Sprite ketchup_sauce;
+    ketchup_sauce.setTexture(ketchup_sauce_texture);
+    ketchup_sauce.setPosition(sf::Vector2f(310, 290));
+    ketchup_sauce.setScale(sf::Vector2f(0.25f, 0.25f));
+    sf::FloatRect ketchup_sauce_colision = ketchup_sauce.getGlobalBounds();
+    sf::Color originalKetchupSauce = ketchup_sauce.getColor();
+
     sf::Texture mustard_texture;
     if (!mustard_texture.loadFromFile("./sprites/Mustard.png")) {
         return -1;
@@ -206,6 +218,17 @@ int main() {
     mustard.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect mustard_colision = mustard.getGlobalBounds();
     sf::Color originalMustard = mustard.getColor();
+
+    sf::Texture mustard_sauce_texture;
+    if (!mustard_sauce_texture.loadFromFile("./sprites/mustard_sauce.png")) {
+        return -1;
+    }
+    sf::Sprite mustard_sauce;
+    mustard_sauce.setTexture(mustard_sauce_texture);
+    mustard_sauce.setPosition(sf::Vector2f(420, 290));
+    mustard_sauce.setScale(sf::Vector2f(0.25f, 0.25f));
+    sf::FloatRect mustard_sauce_colision = mustard_sauce.getGlobalBounds();
+    sf::Color originalMustardSauce = mustard_sauce.getColor();
 
     sf::Texture pao_texture;
     if (!pao_texture.loadFromFile("./sprites/Pao.png")) {
@@ -263,6 +286,11 @@ int main() {
     titleText.setFont(font);
     titleText.setCharacterSize(16);
     titleText.setFillColor(sf::Color::Black);
+
+    sf::Text GameOverText;
+    GameOverText.setFont(font);
+    GameOverText.setCharacterSize(24);
+    GameOverText.setFillColor(sf::Color::White);
 
     sf::Cursor cursorMao;
     if (cursorMao.loadFromSystem(sf::Cursor::Hand)) {
@@ -326,323 +354,312 @@ int main() {
             //cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             //mostra_pilha((*receita).getPilha());
         }
-        
-        if (fila_de_receitas.estaVazio()) {
-            ok = false;
-            cout << "SCORE:" << score << "pts" << endl;
-            //break;
-        }
         //Event Info Getting Section
         cursorPosition = sf::Mouse::getPosition(win);
         worldPos = win.mapPixelToCoords(cursorPosition);
         sf::Event e;
-        float elapsed;
-        float old = elapsed;
-        elapsed = clock.getElapsedTime().asSeconds();
+        
 
-        int minutes = static_cast<int>(elapsed) / 60;
-        int secs = static_cast<int>(elapsed) % 60;
-        int mili = static_cast<int>(elapsed) % 1000;
+        if (ok) {
+            float elapsed;
+            float old = elapsed;
+            elapsed = clock.getElapsedTime().asSeconds();
 
-        int oldminutes = static_cast<int>(old) / 60;
-        int oldsecs = static_cast<int>(old) % 60;
-        int oldmili = static_cast<int>(old) % 1000;
+            int minutes = static_cast<int>(elapsed) / 60;
+            int secs = static_cast<int>(elapsed) % 60;
+            int mili = static_cast<int>(elapsed) % 1000;
 
-        stringstream ss;
-        ss << minutes << ":" << secs << "   ";
-        timerText.setString(ss.str());
-        //cout << worldPos.x << " | " << worldPos.y << endl;
-        //Event loop
-        while (win.pollEvent(e)) {
-            if (e.type == sf::Event::Closed) {
-                win.close();
-            }
-
-            if (e.type == sf::Event::KeyPressed) {
-                if (e.key.code == sf::Keyboard::Right && !fila_de_receitas.estaVazio()) {
-                    if (currentRecipeId < fila_de_receitas.getSize() - 1) {
-                        currentRecipeId++;
-                    } else {
-                        currentRecipeId = 0;
-                    }
-                    currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
+            int oldminutes = static_cast<int>(old) / 60;
+            int oldsecs = static_cast<int>(old) % 60;
+            int oldmili = static_cast<int>(old) % 1000;
+            while (win.pollEvent(e)) {
+                if (e.type == sf::Event::Closed) {
+                    win.close();
                 }
 
-                if (e.key.code == sf::Keyboard::Left && !fila_de_receitas.estaVazio()) {
-                    if (currentRecipeId > 0) {
-                        currentRecipeId--;
-                    } else {
-                        currentRecipeId = fila_de_receitas.getSize() - 1;
+                if (e.type == sf::Event::KeyPressed) {
+                    if (e.key.code == sf::Keyboard::Right && !fila_de_receitas.estaVazio()) {
+                        if (currentRecipeId < fila_de_receitas.getSize() - 1) {
+                            currentRecipeId++;
+                        } else {
+                            currentRecipeId = 0;
+                        }
+                        currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
                     }
-                    currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
+
+                    if (e.key.code == sf::Keyboard::Left && !fila_de_receitas.estaVazio()) {
+                        if (currentRecipeId > 0) {
+                            currentRecipeId--;
+                        } else {
+                            currentRecipeId = fila_de_receitas.getSize() - 1;
+                        }
+                        currentRecipe = fila_de_receitas.getElementos()[currentRecipeId];
+                    }
                 }
-            }
 
-            if (e.type == sf::Event::MouseButtonPressed) {
-                if (e.mouseButton.button == sf::Mouse::Left) {
-                    if (tomate_colision.contains(worldPos)) {
-                        tomate.setPosition(sf::Vector2f(430, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(tomate);
-                        id_escolhido = 6;
-                        ing_picked = true;
-                    }
-
-                    if (alface_colision.contains(worldPos)) {
-                        alface.setPosition(sf::Vector2f(425, 495 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(alface);
-                        id_escolhido = 7;
-                        ing_picked = true;
-                    }
-
-                    if (bacon_colision.contains(worldPos)) {
-                        bacon.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(bacon);
-                        id_escolhido = 11;
-                        ing_picked = true;
-                    }
-
-                    if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
-                        bread_type = 1;
-                        if (!bread_base) {
-                            base_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                            elements.push_back(base_brioche);
-                        } else {
-                            topo_brioche.setPosition(sf::Vector2f(407, 475 - layer_offset));
-                            elements.push_back(topo_brioche);
-                        }
-                        id_escolhido = 2;
-                        ing_picked = true;
-                        if (!bread_base) {
-                            bread_base = true;
+                if (e.type == sf::Event::MouseButtonPressed) {
+                    if (e.mouseButton.button == sf::Mouse::Left) {
+                        if (tomate_colision.contains(worldPos)) {
+                            tomate.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(tomate);
+                            id_escolhido = 6;
+                            ing_picked = true;
                         }
 
-                        layer_offset += 6.5f;                        
-                    }
-
-                    if (cebola_car_colision.contains(worldPos)) {
-                        cebola_car.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(cebola_car);
-                        id_escolhido = 12;
-                        ing_picked = true;
-                    }
-
-                    if (cebola_nor_colision.contains(worldPos)) {
-                        cebola_nor.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(cebola_nor);
-                        id_escolhido = 8;
-                        ing_picked = true;
-                    }
-
-                    if (frango_colision.contains(worldPos)) {
-                        frango.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(frango);
-                        id_escolhido = 5;
-                        ing_picked = true;
-                    }
-
-                    if (hamburguer_bov_colision.contains(worldPos)) {
-                        hamburguer_bov.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(hamburguer_bov);
-                        id_escolhido = 3;
-                        ing_picked = true;
-                    }
-
-                    if (hamburguer_veg_colision.contains(worldPos)) {
-                        hamburguer_veg.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(hamburguer_veg);
-                        id_escolhido = 4;
-                        ing_picked = true;
-                    }
-
-                    if (ketchup_colision.contains(worldPos)) {
-                        ketchup.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(ketchup);
-                        id_escolhido = 10;
-                        ing_picked = true;
-                    }
-
-                    if (mustard_colision.contains(worldPos)) {
-                        mustard.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                        layer_offset += 6.5f;
-                        elements.push_back(mustard);
-                        id_escolhido = 9;
-                        ing_picked = true;
-                    }
-
-                    if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
-                        bread_type = 0;
-
-                        if (!bread_base) {
-                            base_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
-                            elements.push_back(base_pao);
-                        } else {
-                            topo_pao.setPosition(sf::Vector2f(407, 475 - layer_offset));
-                            elements.push_back(topo_pao);
-                        }
-                        id_escolhido = 1;
-                        ing_picked = true;
-                        if (!bread_base) {
-                            bread_base = true;
+                        if (alface_colision.contains(worldPos)) {
+                            alface.setPosition(sf::Vector2f(425, 495 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(alface);
+                            id_escolhido = 7;
+                            ing_picked = true;
                         }
 
-                        layer_offset += 6.5f;
-                    }
+                        if (bacon_colision.contains(worldPos)) {
+                            bacon.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(bacon);
+                            id_escolhido = 11;
+                            ing_picked = true;
+                        }
 
-                    if (comanda_colision.contains(worldPos) && pedido) {
-                        if (!vendo_pedido) {
+                        if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
+                            bread_type = 1;
+                            if (!bread_base) {
+                                base_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                elements.push_back(base_brioche);
+                            } else {
+                                topo_brioche.setPosition(sf::Vector2f(407, 475 - layer_offset));
+                                elements.push_back(topo_brioche);
+                            }
+                            id_escolhido = 2;
+                            ing_picked = true;
+                            if (!bread_base) {
+                                bread_base = true;
+                            }
+
+                            layer_offset += 6.5f;                        
+                        }
+
+                        if (cebola_car_colision.contains(worldPos)) {
+                            cebola_car.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(cebola_car);
+                            id_escolhido = 12;
+                            ing_picked = true;
+                        }
+
+                        if (cebola_nor_colision.contains(worldPos)) {
+                            cebola_nor.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(cebola_nor);
+                            id_escolhido = 8;
+                            ing_picked = true;
+                        }
+
+                        if (frango_colision.contains(worldPos)) {
+                            frango.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(frango);
+                            id_escolhido = 5;
+                            ing_picked = true;
+                        }
+
+                        if (hamburguer_bov_colision.contains(worldPos)) {
+                            hamburguer_bov.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(hamburguer_bov);
+                            id_escolhido = 3;
+                            ing_picked = true;
+                        }
+
+                        if (hamburguer_veg_colision.contains(worldPos)) {
+                            hamburguer_veg.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(hamburguer_veg);
+                            id_escolhido = 4;
+                            ing_picked = true;
+                        }
+
+                        if (ketchup_colision.contains(worldPos)) {
+                            ketchup_sauce.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(ketchup_sauce);
+                            id_escolhido = 10;
+                            ing_picked = true;
+                        }
+
+                        if (mustard_colision.contains(worldPos)) {
+                            mustard_sauce.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                            layer_offset += 6.5f;
+                            elements.push_back(mustard_sauce);
+                            id_escolhido = 9;
+                            ing_picked = true;
+                        }
+
+                        if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
+                            bread_type = 0;
+
+                            if (!bread_base) {
+                                base_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                elements.push_back(base_pao);
+                            } else {
+                                topo_pao.setPosition(sf::Vector2f(407, 475 - layer_offset));
+                                elements.push_back(topo_pao);
+                            }
+                            id_escolhido = 1;
+                            ing_picked = true;
+                            if (!bread_base) {
+                                bread_base = true;
+                            }
+
+                            layer_offset += 6.5f;
+                        }
+
+                        if (comanda_colision.contains(worldPos) && pedido) {
+                            if (!vendo_pedido) {
+                                
+                                vendo_pedido = true;
+                                sf::Vector2f cmd_pos = comanda.getPosition();
+                                comanda_aberta.setPosition(sf::Vector2f(cmd_pos.x - 100, cmd_pos.y));
+                                recipeText.setPosition(sf::Vector2f(cmd_pos.x - 85, cmd_pos.y + 10));
+                            } else {
+                                vendo_pedido = false;
+                            }
                             
-                            vendo_pedido = true;
-                            sf::Vector2f cmd_pos = comanda.getPosition();
-                            comanda_aberta.setPosition(sf::Vector2f(cmd_pos.x - 100, cmd_pos.y));
-                            recipeText.setPosition(sf::Vector2f(cmd_pos.x - 85, cmd_pos.y + 10));
-                        } else {
-                            vendo_pedido = false;
                         }
-                        
                     }
                 }
             }
-        }
 
-        for (Receita* r : fila_de_receitas.getElementos()) {
-            if (secs < oldsecs) {
-                oldsecs = secs;
+            for (Receita* r : fila_de_receitas.getElementos()) {
+                if (secs < oldsecs) {
+                    oldsecs = secs;
+                }
+                r->decrementarTempo((secs - oldsecs)); 
             }
-            r->decrementarTempo((secs - oldsecs)); 
-        }
 
-        fila_de_receitas.rebalancear();
+            fila_de_receitas.rebalancear();
 
-        // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
-        while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
+            // C. Checar e remover receitas prontas (Regra: a cada receita pronta)
+            while (!fila_de_receitas.estaVazio() && fila_de_receitas.olharMinimo()->expirou()) {
+                
+                Receita* pronta = fila_de_receitas.extrairMinimo();
+                // Libera a memória da receita pronta
+
+                cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
+                cout.flush();
+                //verification
+                if (pilhas_iguais((*pronta).getPilha(), receita_montada)) {
+                    cout << "Parabéns! Você acertou a " << pronta->getNome() << "em cima do tempo!" << endl;
+                    score++;
+                } else {
+                    cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
+                    //ok = false;
+                    score--;
+                }
+                
+                int rId = 0;
+                if (!fila_de_receitas.estaVazio()) {
+                    cout << "inside while loop" << endl;
+                    for (Receita* r : fila_de_receitas.getElementos()) {
+                        cout <<  rId << ". " << r->getNome() << endl;
+                        rId++;
+                    }
+                } else {
+                    cout << "inside ver" << endl;
+                    ok = false;
+                    cout << "SCORE:" << score << "pts" << endl;
+                    break;
+                }
+                
+                //clock.restart();
+                //vendo_pedido = false;
+                //resets
+                elements.clear();
+                pedido = false;
+                bread_type = -1;
+                bread_base = false;
+                layer_offset = 0.0f;
+                //fila_de_receitas.deletar(0);
+                fila_de_receitas.rebalancear();
+                if (currentRecipe == pronta) {
+                    currentRecipe = fila_de_receitas.getElementos()[0];
+                }
+                delete_pilha(receita_montada);
+                delete pronta; 
+                id_escolhido = 0;
+                camada_atual = 0;
+                id_receita++;
+                receita_montada = criaPilha();
+
+                //restarts
+                pedido = true;
+            }
+
+            if (fila_de_receitas.estaVazio()) {
+                cout << "independent ver" << endl;
+                ok = false;
+                cout << "SCORE:" << score << "pts" << endl;
+                //break;
+            }
             
-            Receita* pronta = fila_de_receitas.extrairMinimo();
-            // Libera a memória da receita pronta
 
-            cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
-            cout.flush();
-            //verification
-            if (pilhas_iguais((*pronta).getPilha(), receita_montada)) {
-                cout << "Parabéns! Você acertou a " << pronta->getNome() << "em cima do tempo!" << endl;
-                score++;
+            if (ing_picked) {
+                ing_picked = false;
+                ing = Ingrediente(INGREDIENTES_IDS.at(id_escolhido), camada_atual, id_escolhido);
+                empilha(receita_montada, ing);
+                camada_atual++;
+            }
+
+            if (alface_colision.contains(worldPos) || bacon_colision.contains(worldPos) || brioche_colision.contains(worldPos)
+                || pao_colision.contains(worldPos) || cebola_car_colision.contains(worldPos) || cebola_nor_colision.contains(worldPos)
+                || comanda_colision.contains(worldPos) || frango_colision.contains(worldPos) || hamburguer_bov_colision.contains(worldPos)
+                || hamburguer_veg_colision.contains(worldPos) || ketchup_colision.contains(worldPos) || mustard_colision.contains(worldPos)
+                || tomate_colision.contains(worldPos)) {
+                win.setMouseCursor(cursorMao);
             } else {
-                cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
-                //ok = false;
-                score--;
-            }
-            
-            int rId = 0;
-            if (!fila_de_receitas.estaVazio()) {
-                cout << "inside while loop" << endl;
+                win.setMouseCursor(cursorSeta);
+            }        
+
+            if (camada_atual == (*currentRecipe).getQtdIngredientes()) {
+                //verification
+                if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
+                    cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
+                    score++;
+                } else {
+                    cout << "Que pena! Você errou a receita!" << endl;
+                    score--;
+                }
+
+                int rId = 0;
+                cout << "Inside verification clause" << endl;
                 for (Receita* r : fila_de_receitas.getElementos()) {
                     cout <<  rId << ". " << r->getNome() << endl;
                     rId++;
                 }
-            } else {
-                cout << "inside ver" << endl;
-                ok = false;
-                cout << "SCORE:" << score << "pts" << endl;
-                break;
-            }
-            
-            //clock.restart();
-            //vendo_pedido = false;
-            //resets
-            elements.clear();
-            pedido = false;
-            bread_type = -1;
-            bread_base = false;
-            layer_offset = 0.0f;
-            //fila_de_receitas.deletar(0);
-            fila_de_receitas.rebalancear();
-            if (currentRecipe == pronta) {
+
+                fila_de_receitas.deletar(currentRecipeId);
+                fila_de_receitas.rebalancear();
                 currentRecipe = fila_de_receitas.getElementos()[0];
-            }
-            delete_pilha(receita_montada);
-            delete pronta; 
-            id_escolhido = 0;
-            camada_atual = 0;
-            id_receita++;
-            receita_montada = criaPilha();
+                //resets
+                elements.clear();
+                pedido = false;
+                bread_type = -1;
+                bread_base = false;
+                layer_offset = 0.0f;
 
-            //restarts
-            pedido = true;
-        }
+                //delete currentRecipe;
+                delete_pilha(receita_montada);
+                id_escolhido = 0;
+                camada_atual = 0;
+                receita_montada = criaPilha();
 
-        if (fila_de_receitas.estaVazio()) {
-            cout << "independent ver" << endl;
-            ok = false;
-            cout << "SCORE:" << score << "pts" << endl;
-            //break;
-        }
-        
+                //restarts
+                pedido = true;
+            } 
 
-        if (ing_picked) {
-            ing_picked = false;
-            ing = Ingrediente(INGREDIENTES_IDS.at(id_escolhido), camada_atual, id_escolhido);
-            empilha(receita_montada, ing);
-            camada_atual++;
-        }
-
-        if (alface_colision.contains(worldPos) || bacon_colision.contains(worldPos) || brioche_colision.contains(worldPos)
-            || pao_colision.contains(worldPos) || cebola_car_colision.contains(worldPos) || cebola_nor_colision.contains(worldPos)
-            || comanda_colision.contains(worldPos) || frango_colision.contains(worldPos) || hamburguer_bov_colision.contains(worldPos)
-            || hamburguer_veg_colision.contains(worldPos) || ketchup_colision.contains(worldPos) || mustard_colision.contains(worldPos)
-            || tomate_colision.contains(worldPos)) {
-            win.setMouseCursor(cursorMao);
-        } else {
-            win.setMouseCursor(cursorSeta);
-        }        
-
-        if (camada_atual == (*currentRecipe).getQtdIngredientes()) {
-            //verification
-            if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
-                cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
-                score++;
-            } else {
-                cout << "Que pena! Você errou a receita!" << endl;
-                score--;
-            }
-
-            int rId = 0;
-            cout << "Inside verification clause" << endl;
-            for (Receita* r : fila_de_receitas.getElementos()) {
-                cout <<  rId << ". " << r->getNome() << endl;
-                rId++;
-            }
-
-            fila_de_receitas.deletar(currentRecipeId);
-            fila_de_receitas.rebalancear();
-            currentRecipe = fila_de_receitas.getElementos()[0];
-            //resets
-            elements.clear();
-            pedido = false;
-            bread_type = -1;
-            bread_base = false;
-            layer_offset = 0.0f;
-
-            //delete currentRecipe;
-            delete_pilha(receita_montada);
-            id_escolhido = 0;
-            camada_atual = 0;
-            receita_montada = criaPilha();
-
-            //restarts
-            pedido = true;
-        } 
-
-        win.clear(sf::Color::Black);
-        if (ok) {
-
+            win.clear(sf::Color::Black);
             if (pedido) {
                 win.draw(cozinha);
                 if (comanda_colision.contains(worldPos)) {
@@ -672,19 +689,26 @@ int main() {
             }
             win.draw(timerText);
         } else {
+            win.clear(sf::Color::Black);
             if (!fTimeSet) {
                 Felapsed = clock.getElapsedTime().asSeconds();
 
-                Fminutes = static_cast<int>(elapsed) / 60;
-                Fsecs = static_cast<int>(elapsed) % 60;
-                Fmili = static_cast<int>(elapsed) % 1000;
+                Fminutes = static_cast<int>(Felapsed) / 60;
+                Fsecs = static_cast<int>(Felapsed) % 60;
+                Fmili = static_cast<int>(Felapsed) % 1000;
                 fTimeSet = true;
             }
 
             clock.restart();
 
-            cout << "Game over | SCORE: " << score << " | FINAL TIME: " << Fminutes 
-            << ":" << Fsecs << "." << Fmili << "\r";
+            GameOverText.setPosition(sf::Vector2f(100, 100));
+
+            stringstream gmOvrStr;
+            gmOvrStr << "Game Over!";
+
+            GameOverText.setString(sf::String::fromUtf8(gmOvrStr.str().begin(), gmOvrStr.str().end()));
+
+            win.draw(GameOverText);
             //break;
         }
         win.display();
