@@ -273,14 +273,20 @@ int main() {
 
     sf::Text timerText;
     timerText.setFont(pixelate);
-    timerText.setCharacterSize(50);
+    timerText.setCharacterSize(20);
     timerText.setFillColor(sf::Color::Black);
-    timerText.setPosition(sf::Vector2f(75, 25));
+    timerText.setPosition(sf::Vector2f(65, 25));
 
     sf::Text recipeText;
     recipeText.setFont(handmade);
     recipeText.setCharacterSize(16);
     recipeText.setFillColor(sf::Color::Black);
+
+    sf::Text remainingRecipesText;
+    remainingRecipesText.setFont(pixelate);
+    remainingRecipesText.setCharacterSize(12);
+    remainingRecipesText.setFillColor(sf::Color::Black);
+    remainingRecipesText.setPosition(sf::Vector2f(20, 50));
 
     sf::Text titleText;
     titleText.setFont(font);
@@ -293,13 +299,13 @@ int main() {
     GameOverText.setFillColor(sf::Color::White);
 
     sf::Cursor cursorMao;
-    if (cursorMao.loadFromSystem(sf::Cursor::Hand)) {
-        std::cout << "Cursor Mao carregado." << std::endl;
+    if (!cursorMao.loadFromSystem(sf::Cursor::Hand)) {
+        return -1;
     }
 
     sf::Cursor cursorSeta;
-    if (cursorSeta.loadFromSystem(sf::Cursor::Arrow)) {
-        std::cout << "Cursor Seta carregado." << std::endl;
+    if (!cursorSeta.loadFromSystem(sf::Cursor::Arrow)) {
+        return -1;
     }
 
     //Window loop
@@ -341,16 +347,17 @@ int main() {
             //restarts
             // Inicializa o Heap com 10 receitas
             for (int i = 0; i < NUM_RECEITAS_INICIAIS; ++i) {
-                string nome = "Receita-" + to_string(i + 1);
+                string nome = "Pedido #" + to_string(i + 1);
                 fila_de_receitas.inserir(new Receita(nome));
             }
+            fila_de_receitas.rebalancear();
             pedido = true;
             currentRecipe = fila_de_receitas.getElementos()[0];
-            for (Receita* r : fila_de_receitas.getElementos()) {
+            /*for (Receita* r : fila_de_receitas.getElementos()) {
                 cout << endl << "Receita a ser feita: " << (*r).getNome() << endl << endl;
                 mostra_pilha((*r).getPilha());
                 cout << endl << "EM: " << r->getTempoConclusao() << " segundos!" << endl;
-            }
+            }*/
             //cout << endl << "Receita a ser feita: " << (*receita).getNome() << endl << endl;
             //mostra_pilha((*receita).getPilha());
         }
@@ -369,9 +376,19 @@ int main() {
             int secs = static_cast<int>(elapsed) % 60;
             int mili = static_cast<int>(elapsed) % 1000;
 
+            stringstream ttext;
+            ttext << setfill('0') << setw(2) << minutes << ":"
+                  << setfill('0') << setw(2) << secs;
+
+            timerText.setString(ttext.str());
+
             int oldminutes = static_cast<int>(old) / 60;
             int oldsecs = static_cast<int>(old) % 60;
             int oldmili = static_cast<int>(old) % 1000;
+
+            stringstream rmRecText;
+            rmRecText << "Remaining Recipes: " << setfill('0') << setw(2) << fila_de_receitas.getSize();
+            remainingRecipesText.setString(rmRecText.str());
             while (win.pollEvent(e)) {
                 if (e.type == sf::Event::Closed) {
                     win.close();
@@ -668,7 +685,6 @@ int main() {
                     comanda.setColor(originalComanda);
                 }
                 win.draw(comanda);
-
                 if (vendo_pedido) {
                     string recText = getRecipeStr(currentRecipe);
                     recipeText.setString(sf::String::fromUtf8(recText.begin(), recText.end()));
@@ -688,6 +704,7 @@ int main() {
                 win.draw(recipeText);
             }
             win.draw(timerText);
+            win.draw(remainingRecipesText);
         } else {
             win.clear(sf::Color::Black);
             if (!fTimeSet) {
