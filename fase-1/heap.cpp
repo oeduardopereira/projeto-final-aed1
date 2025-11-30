@@ -96,4 +96,8 @@ class HeapPrioridade {
             elementos.erase(elementos.begin() + i);
             return r;
         }
+
+        void clear() {
+            elementos.clear();
+        }
 };

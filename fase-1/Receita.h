@@ -35,6 +35,7 @@ class Receita {
         }
         int getQtdIngredientes();
         int getTempoConclusao();
+        int getId();
         int getReceitaPorIds(int pos) const; 
         Ingrediente getIngredientes(int pos) const;
         string getNome() const;
@@ -178,6 +179,10 @@ int Receita::getQtdIngredientes() {
 
 int Receita::getTempoConclusao() {
     return this->tempo_conclusao_segs;
+}
+
+int Receita::getId() {
+    return this->id;
 }
 
 #endif
