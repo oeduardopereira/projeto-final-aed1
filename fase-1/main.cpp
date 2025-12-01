@@ -107,6 +107,26 @@ int main() {
     mainMenuBtn.setFillColor(sf::Color::Green);
     mainMenuBtn.setSize(sf::Vector2f(400, 50));
 
+    sf::Texture TipsScreen_texture;
+    if (!TipsScreen_texture.loadFromFile("./sprites/dicas.jpeg")) {
+        return -1;
+    }
+
+    sf::Sprite TipsScreen;
+    TipsScreen.setTexture(TipsScreen_texture);
+    TipsScreen.setPosition(sf::Vector2f(0, 0));
+    TipsScreen.setScale(sf::Vector2f(0.7f, 0.8f));
+
+    sf::Texture IngScreen_texture;
+    if (!IngScreen_texture.loadFromFile("./sprites/ingredientes.jpeg")) {
+        return -1;
+    }
+
+    sf::Sprite IngScreen;
+    IngScreen.setTexture(IngScreen_texture);
+    IngScreen.setPosition(sf::Vector2f(0, 0));
+    IngScreen.setScale(sf::Vector2f(0.7f, 0.8f));
+
     sf::Texture tomate_texture;
     if (!tomate_texture.loadFromFile("./sprites/Tomate.png")) {
         return -1;
@@ -343,12 +363,7 @@ int main() {
     GameOverTitle.setFont(pixelate);
     GameOverTitle.setCharacterSize(24);
     GameOverTitle.setFillColor(sf::Color::Black);
-
-    sf::Text StartingScreenText;
-    StartingScreenText.setFont(font);
-    StartingScreenText.setCharacterSize(24);
-    StartingScreenText.setFillColor(sf::Color::White);
-
+    
     sf::Cursor cursorMao;
     if (!cursorMao.loadFromSystem(sf::Cursor::Hand)) {
         return -1;
@@ -358,6 +373,7 @@ int main() {
     if (!cursorSeta.loadFromSystem(sf::Cursor::Arrow)) {
         return -1;
     }
+
 
     // 1. Música de Fundo (sf::Music)
     sf::Music backgroundMusic;
@@ -475,7 +491,11 @@ int main() {
     sf::Event e;
     float Felapsed;
     int Fminutes, Fsecs, Fmili;
+    int starting_state = 0;
+    bool draw_tips = false;
+    bool draw_ing = false;
     while (win.isOpen() && !exit) {
+        starting_state = 0;
         while (onMenu) {
             cursorPosition = sf::Mouse::getPosition(win);
             worldPos = win.mapPixelToCoords(cursorPosition);
@@ -485,16 +505,36 @@ int main() {
                     win.close();
                 }
 
-                if (e.type == sf::Event::MouseButtonPressed) {
-                    if (e.mouseButton.button == sf::Mouse::Left) {
-                        if (startBtn.getGlobalBounds().contains(worldPos)) {
+                if (e.type == sf::Event::KeyPressed) {
+                    if (e.key.code == sf::Keyboard::Enter) {
+                        if (starting_state == 1) {
+                            draw_tips = false;
+                            draw_ing = true;
+                            starting_state++;
+                        } else if (starting_state == 2) {
+                            draw_tips = false;
+                            draw_ing = false;
                             playing = true;
                             start = true;
                             onMenu = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (e.type == sf::Event::MouseButtonPressed) {
+                    if (e.mouseButton.button == sf::Mouse::Left) {
+                        if (startBtn.getGlobalBounds().contains(worldPos)) {
+                            if (starting_state == 0) {
+                                starting_state = 1;
+                                draw_tips = true;
+                                draw_ing = false;
+                            }
                         }
 
                         if (exitBtn.getGlobalBounds().contains(worldPos)) {
                             win.close();
+                            onMenu = false;
                             exit = true;
                             break;
                         }
@@ -503,10 +543,21 @@ int main() {
                 }
             }
             win.clear(sf::Color::Black);
-            win.draw(titleScreen);
+            if (!draw_ing && !draw_tips) {
+                win.draw(titleScreen);
+            } else if (draw_tips) {
+                win.draw(TipsScreen);
+            } else {
+                win.draw(IngScreen);
+            }
+            
             //win.draw(startBtn);
             //win.draw(exitBtn);
             win.display();
+        }
+
+        if (exit) {
+            continue;
         }
 
         while (!onMenu) {
@@ -1012,6 +1063,10 @@ int main() {
                 //break;
             }
             win.display();
+        }
+        if (exit) {
+            //win.close();
+            break;
         }
     }
 
