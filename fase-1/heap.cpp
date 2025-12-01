@@ -100,4 +100,12 @@ class HeapPrioridade {
         void clear() {
             elementos.clear();
         }
+
+        int find(int rId) {
+            for (int p = 0; p < elementos.size(); p++) {
+                if (rId == elementos[p]->getId()) {
+                    return p;
+                }
+            }
+        }
 };

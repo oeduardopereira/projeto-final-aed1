@@ -370,28 +370,78 @@ int main() {
     }
     
     // 2. Buffer para Efeito Sonoro de Pegar Item (sf::Sound)
-    sf::SoundBuffer pickSoundBuffer;
-    if (!pickSoundBuffer.loadFromFile("./assets/audio/pick_item.wav")) {
-        std::cerr << "ERRO: Falha ao carregar pick_item.wav" << std::endl;
+    sf::SoundBuffer hoverSoundBuffer;
+    if (!hoverSoundBuffer.loadFromFile("./assets/audio/hover_item.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
     }
-    sf::Sound pickSound;
-    pickSound.setBuffer(pickSoundBuffer);
-    
-    // 3. Buffer para Efeito Sonoro de Sucesso (sf::Sound)
+    sf::Sound hoverSound;
+    hoverSound.setBuffer(hoverSoundBuffer);
+
+    sf::SoundBuffer alfaceSoundBuffer;
+    if (!alfaceSoundBuffer.loadFromFile("./assets/audio/alface.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound alfaceSound;
+    alfaceSound.setBuffer(alfaceSoundBuffer);
+
+    sf::SoundBuffer clockSoundBuffer;
+    if (!clockSoundBuffer.loadFromFile("./assets/audio/clock.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound clockSound;
+    clockSound.setBuffer(clockSoundBuffer);
+    clockSound.setLoop(true);
+
+    sf::SoundBuffer cuttingSoundBuffer;
+    if (!cuttingSoundBuffer.loadFromFile("./assets/audio/cutting.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound cuttingSound;
+    cuttingSound.setBuffer(cuttingSoundBuffer);
+
+    sf::SoundBuffer expiredSoundBuffer;
+    if (!expiredSoundBuffer.loadFromFile("./assets/audio/expired.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound expiredSound;
+    expiredSound.setBuffer(expiredSoundBuffer);
+
+    sf::SoundBuffer failureSoundBuffer;
+    if (!failureSoundBuffer.loadFromFile("./assets/audio/failure.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound failureSound;
+    failureSound.setBuffer(failureSoundBuffer);
+
+    sf::SoundBuffer fryingSoundBuffer;
+    if (!fryingSoundBuffer.loadFromFile("./assets/audio/frying.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound fryingSound;
+    fryingSound.setBuffer(fryingSoundBuffer);
+
+    sf::SoundBuffer saucesSoundBuffer;
+    if (!saucesSoundBuffer.loadFromFile("./assets/audio/sauces.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
+    }
+    sf::Sound saucesSound;
+    saucesSound.setBuffer(saucesSoundBuffer);
+
     sf::SoundBuffer successSoundBuffer;
     if (!successSoundBuffer.loadFromFile("./assets/audio/success.wav")) {
-        std::cerr << "ERRO: Falha ao carregar success.wav" << std::endl;
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
     }
     sf::Sound successSound;
     successSound.setBuffer(successSoundBuffer);
-    
-    // 4. Buffer para Efeito Sonoro de Erro/Expiração (sf::Sound)
-    sf::SoundBuffer errorSoundBuffer;
-    if (!errorSoundBuffer.loadFromFile("./assets/audio/error.wav")) {
-        std::cerr << "ERRO: Falha ao carregar error.wav" << std::endl;
+
+    sf::SoundBuffer tomato_cutSoundBuffer;
+    if (!tomato_cutSoundBuffer.loadFromFile("./assets/audio/tomato_cut.wav")) {
+        std::cerr << "ERRO: Falha ao carregar hover_item.wav" << std::endl;
     }
-    sf::Sound errorSound;
-    errorSound.setBuffer(errorSoundBuffer);
+    sf::Sound tomato_cutSound;
+    tomato_cutSound.setBuffer(tomato_cutSoundBuffer);
+    
+
 
     backgroundMusic.play();
 
@@ -448,6 +498,7 @@ int main() {
                             exit = true;
                             break;
                         }
+                        hoverSound.play();
                     }
                 }
             }
@@ -460,12 +511,14 @@ int main() {
 
         while (!onMenu) {
             if (start) {
-                score = 0;
+                score = 9;
                 fila_de_receitas.clear();
                 start = false;
                 id_escolhido = 0;
                 camada_atual = 0;
                 id_receita++;
+                elements.clear();
+                delete_pilha(receita_montada);
                 receita_montada = criaPilha();
 
                 //restarts
@@ -554,7 +607,7 @@ int main() {
                                 elements.push_back(tomate);
                                 id_escolhido = 6;
                                 ing_picked = true;
-                                pickSound.play();
+                                tomato_cutSound.play();
                             }
 
                             if (alface_colision.contains(worldPos)) {
@@ -563,7 +616,7 @@ int main() {
                                 elements.push_back(alface);
                                 id_escolhido = 7;
                                 ing_picked = true;
-                                pickSound.play();
+                                alfaceSound.play();
                             }
 
                             if (bacon_colision.contains(worldPos)) {
@@ -572,7 +625,7 @@ int main() {
                                 elements.push_back(bacon);
                                 id_escolhido = 11;
                                 ing_picked = true;
-                                pickSound.play();
+                                fryingSound.play();
                             }
 
                             if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
@@ -591,7 +644,7 @@ int main() {
                                 }
 
                                 layer_offset += 6.5f;
-                                pickSound.play();                        
+                                cuttingSound.play();                        
                             }
 
                             if (cebola_car_colision.contains(worldPos)) {
@@ -600,7 +653,7 @@ int main() {
                                 elements.push_back(cebola_car);
                                 id_escolhido = 12;
                                 ing_picked = true;
-                                pickSound.play();
+                                fryingSound.play();
                             }
 
                             if (cebola_nor_colision.contains(worldPos)) {
@@ -609,7 +662,7 @@ int main() {
                                 elements.push_back(cebola_nor);
                                 id_escolhido = 8;
                                 ing_picked = true;
-                                pickSound.play();
+                                tomato_cutSound.play();
                             }
 
                             if (frango_colision.contains(worldPos)) {
@@ -618,7 +671,7 @@ int main() {
                                 elements.push_back(frango);
                                 id_escolhido = 5;
                                 ing_picked = true;
-                                pickSound.play();
+                                fryingSound.play();
                             }
 
                             if (hamburguer_bov_colision.contains(worldPos)) {
@@ -627,7 +680,7 @@ int main() {
                                 elements.push_back(hamburguer_bov);
                                 id_escolhido = 3;
                                 ing_picked = true;
-                                pickSound.play();
+                                fryingSound.play();
                             }
 
                             if (hamburguer_veg_colision.contains(worldPos)) {
@@ -636,7 +689,7 @@ int main() {
                                 elements.push_back(hamburguer_veg);
                                 id_escolhido = 4;
                                 ing_picked = true;
-                                pickSound.play();
+                                fryingSound.play();
                             }
 
                             if (ketchup_colision.contains(worldPos)) {
@@ -645,7 +698,7 @@ int main() {
                                 elements.push_back(ketchup_sauce);
                                 id_escolhido = 10;
                                 ing_picked = true;
-                                pickSound.play();
+                                saucesSound.play();
                             }
 
                             if (mustard_colision.contains(worldPos)) {
@@ -654,7 +707,7 @@ int main() {
                                 elements.push_back(mustard_sauce);
                                 id_escolhido = 9;
                                 ing_picked = true;
-                                pickSound.play();
+                                saucesSound.play();
                             }
 
                             if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
@@ -674,7 +727,7 @@ int main() {
                                 }
 
                                 layer_offset += 6.5f;
-                                pickSound.play();
+                                cuttingSound.play();
                             }
 
                             if (comanda_colision.contains(worldPos) && pedido) {
@@ -687,7 +740,7 @@ int main() {
                                 } else {
                                     vendo_pedido = false;
                                 }
-                                
+                                expiredSound.play();
                             }
                         }
                     }
@@ -709,6 +762,7 @@ int main() {
                     // Libera a memória da receita pronta
 
                     cout << "Timeout! (" << minutes << ":" << secs << ")\033[F" << endl;
+                    expiredSound.play();
                     cout.flush();
                     //verification
                     if (pilhas_iguais((*pronta).getPilha(), receita_montada)) {
@@ -722,7 +776,7 @@ int main() {
                         cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
                         //playing = false;
                         score--;
-                        errorSound.play();
+                        failureSound.play();
                     }
                     
                     int rId = 0;
@@ -744,7 +798,9 @@ int main() {
                     //fila_de_receitas.deletar(0);
                     fila_de_receitas.rebalancear();
                     if (currentRecipe->getId() == pronta->getId()) {
+                        cout << currentRecipe->getId() << " " << pronta->getId() << endl;
                         currentRecipe = fila_de_receitas.getElementos()[0];
+                        currentRecipeId = 0;
                         pedido = false;
                         bread_type = -1;
                         bread_base = false;
@@ -755,7 +811,10 @@ int main() {
                         receita_montada = criaPilha();
                     }
                     delete pronta; 
-                    
+                    currentRecipeId == fila_de_receitas.find(currentRecipe->getId());
+                    if (fila_de_receitas.getSize() == 1) {
+                        clockSound.play();
+                    }
 
                     //restarts
                     pedido = true;
@@ -791,7 +850,7 @@ int main() {
                     } else {
                         cout << "Que pena! Você errou a receita!" << endl;
                         score--;
-                        errorSound.play();
+                        failureSound.play();
                     }
 
                     int rId = 0;
@@ -802,7 +861,9 @@ int main() {
                     }
 
                     fila_de_receitas.deletar(currentRecipeId);
-
+                    if (fila_de_receitas.getSize() == 1) {
+                        clockSound.play();
+                    }
                     if (fila_de_receitas.estaVazio()) {
                         playing = false;
                         continue;
@@ -857,7 +918,12 @@ int main() {
                 win.draw(timerText);
                 win.draw(remainingRecipesText);
             } else {
-
+                if (score <= 5) {
+                    failureSound.play();
+                } else {
+                    successSound.play();
+                }
+                clockSound.stop();
                 while (win.pollEvent(e)) {
                     if (e.type == sf::Event::Closed) {
                         win.close();
@@ -875,6 +941,7 @@ int main() {
                                 start = false;
                                 onMenu = true;
                             }
+                            hoverSound.play();
                         }
                     }
                 }
