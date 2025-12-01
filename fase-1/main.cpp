@@ -15,7 +15,7 @@
 #include "heap.cpp"
 #include <iomanip>
 
-#define NUM_RECEITAS_INICIAIS 10
+#define NUM_RECEITAS_INICIAIS 1
 
 using namespace std;
 
@@ -265,7 +265,7 @@ int main() {
     sf::Sprite ketchup_sauce;
     ketchup_sauce.setTexture(ketchup_sauce_texture);
     ketchup_sauce.setPosition(sf::Vector2f(310, 290));
-    ketchup_sauce.setScale(sf::Vector2f(0.25f, 0.25f));
+    ketchup_sauce.setScale(sf::Vector2f(0.2f, 0.2f));
     sf::FloatRect ketchup_sauce_colision = ketchup_sauce.getGlobalBounds();
     sf::Color originalKetchupSauce = ketchup_sauce.getColor();
 
@@ -287,7 +287,7 @@ int main() {
     sf::Sprite mustard_sauce;
     mustard_sauce.setTexture(mustard_sauce_texture);
     mustard_sauce.setPosition(sf::Vector2f(420, 290));
-    mustard_sauce.setScale(sf::Vector2f(0.25f, 0.25f));
+    mustard_sauce.setScale(sf::Vector2f(0.2f, 0.2f));
     sf::FloatRect mustard_sauce_colision = mustard_sauce.getGlobalBounds();
     sf::Color originalMustardSauce = mustard_sauce.getColor();
 
@@ -331,6 +331,9 @@ int main() {
     sf::Font handmade;
     handmade.loadFromFile("./assets/handmade.ttf");
 
+    sf::Color blood(93, 29, 19, 255);
+    sf::Color cream(224, 215, 198, 255);
+
 
     sf::Text timerText;
     timerText.setFont(pixelate);
@@ -357,12 +360,7 @@ int main() {
     sf::Text GameOverText;
     GameOverText.setFont(font);
     GameOverText.setCharacterSize(16);
-    GameOverText.setFillColor(sf::Color::Black);
-
-    sf::Text GameOverTitle;
-    GameOverTitle.setFont(pixelate);
-    GameOverTitle.setCharacterSize(24);
-    GameOverTitle.setFillColor(sf::Color::Black);
+    GameOverText.setFillColor(blood);
     
     sf::Cursor cursorMao;
     if (!cursorMao.loadFromSystem(sf::Cursor::Hand)) {
@@ -486,7 +484,7 @@ int main() {
     bool timeRunning = false;
     bool fTimeSet = false;
     bool exit = false;
-    int score = 9;
+    int score = 10;
     sf::Clock clock;
     sf::Event e;
     float Felapsed;
@@ -562,12 +560,15 @@ int main() {
 
         while (!onMenu) {
             if (start) {
-                score = 9;
+                bread_base = false;
+                bread_type = -1;
+                score = 10;
                 fila_de_receitas.clear();
                 start = false;
                 id_escolhido = 0;
                 camada_atual = 0;
                 id_receita++;
+                layer_offset = 0;
                 elements.clear();
                 delete_pilha(receita_montada);
                 receita_montada = criaPilha();
@@ -657,6 +658,13 @@ int main() {
                                 if (receita_montada->indexTopo == -1) {
                                     bread_base = false;
                                     bread_type = -1;
+                                }
+                                if (layer_offset > 0) {
+                                    layer_offset -= 6.5f;
+                                }
+                                
+                                if (camada_atual > 0) {
+                                    camada_atual--;
                                 }
                             }
                         }
@@ -756,7 +764,7 @@ int main() {
                             }
 
                             if (ketchup_colision.contains(worldPos)) {
-                                ketchup_sauce.setPosition(sf::Vector2f(430, 350 - layer_offset));
+                                ketchup_sauce.setPosition(sf::Vector2f(440, 360 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(ketchup_sauce);
                                 id_escolhido = 10;
@@ -765,7 +773,7 @@ int main() {
                             }
 
                             if (mustard_colision.contains(worldPos)) {
-                                mustard_sauce.setPosition(sf::Vector2f(430, 350 - layer_offset));
+                                mustard_sauce.setPosition(sf::Vector2f(440, 360 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(mustard_sauce);
                                 id_escolhido = 9;
@@ -835,10 +843,6 @@ int main() {
                             delete_pilha(receita_montada);
                             elements.clear();
                         }
-
-                        if (fila_de_receitas.getSize() == 0) {
-                            score++;
-                        }
                     } else {
                         cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
                         //playing = false;
@@ -859,6 +863,11 @@ int main() {
                         }
                     } else {
                         playing = false;
+                        if (score <= 5) {
+                            failureSound.play();
+                        } else {
+                            successSound.play();
+                        }
                         break;
                     }
                     
@@ -893,6 +902,12 @@ int main() {
 
                 if (fila_de_receitas.estaVazio()) {
                     playing = false;
+                    if (score <= 5) {
+                        failureSound.play();
+                    } else {
+                        successSound.play();
+                    }
+                    continue;
                 }
                 
 
@@ -918,9 +933,6 @@ int main() {
                     if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
                         cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
                         successSound.play();
-                        if (fila_de_receitas.getSize() == 1) {
-                            score++;
-                        }
                     } else {
                         cout << "Que pena! Você errou a receita!" << endl;
                         score--;
@@ -992,11 +1004,7 @@ int main() {
                 win.draw(timerText);
                 win.draw(remainingRecipesText);
             } else {
-                if (score <= 5) {
-                    failureSound.play();
-                } else {
-                    successSound.play();
-                }
+                
                 clockSound.stop();
                 while (win.pollEvent(e)) {
                     if (e.type == sf::Event::Closed) {
@@ -1030,14 +1038,14 @@ int main() {
 
                 clock.restart();
                 string status;
-                if (score < 0) {
+                if (score == 0) {
                     status = "Oh my god... What have you done?!";
-                } else if (score == 0) {
-                    status = "Are you kidding with me?";
                 } else if (score == 1) {
+                    status = "Are you kidding with me?";
+                } else if (score == 2) {
                     status = "Almost there mate... Just 9 points behind.";
                 } else if (score < 5) {
-                    status = "It's decent.";
+                    status = "It's almost decent.";
                 } else if (score == 5) {
                     status = "Half way to the glory!";
                 } else if (score < 7) {
@@ -1054,19 +1062,16 @@ int main() {
                 gmOvrStrS << "\n\"" << status << "\"\nTime Elapsed: "
                         << setfill('.') << setw(36) << "" << setfill('0') << setw(2) 
                         << Fminutes << ":" << setfill('0') << setw(2) << Fsecs << "\nScore: "
-                        << setfill('.') << setw(48) << score << "pts\n" << "Press R to restart or Press Q to go to Main Menu!";
+                        << setfill('.') << setw(48) << score << "pts\n";
 
                 string gameOverString = gmOvrStrS.str();
 
                 GameOverText.setString(sf::String::fromUtf8(gameOverString.begin(), gameOverString.end()));
                 GameOverText.setPosition(sf::Vector2f(175, 390));
-                GameOverTitle.setString("Game Over!");
-                GameOverTitle.setPosition(sf::Vector2f(275, 350));
                 win.draw(GameOverScreen);
                 //win.draw(restartBtn);
                 //win.draw(mainMenuBtn);
                 win.draw(GameOverText);
-                win.draw(GameOverTitle);
                 //break;
             }
             win.display();
