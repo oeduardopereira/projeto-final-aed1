@@ -2,6 +2,7 @@
 #include <sstream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <unistd.h>
 #include <sstream>
@@ -358,6 +359,42 @@ int main() {
         return -1;
     }
 
+    // 1. Música de Fundo (sf::Music)
+    sf::Music backgroundMusic;
+    if (!backgroundMusic.openFromFile("./assets/audio/musica_fundo.ogg")) {
+        std::cerr << "ERRO: Falha ao carregar musica_fundo.ogg" << std::endl;
+        // O jogo pode continuar sem música, mas o ideal é verificar a pasta.
+    } else {
+        backgroundMusic.setLoop(true); // Toca em loop
+        backgroundMusic.setVolume(50.f); // Volume ajustado para 50%
+    }
+    
+    // 2. Buffer para Efeito Sonoro de Pegar Item (sf::Sound)
+    sf::SoundBuffer pickSoundBuffer;
+    if (!pickSoundBuffer.loadFromFile("./assets/audio/pick_item.wav")) {
+        std::cerr << "ERRO: Falha ao carregar pick_item.wav" << std::endl;
+    }
+    sf::Sound pickSound;
+    pickSound.setBuffer(pickSoundBuffer);
+    
+    // 3. Buffer para Efeito Sonoro de Sucesso (sf::Sound)
+    sf::SoundBuffer successSoundBuffer;
+    if (!successSoundBuffer.loadFromFile("./assets/audio/success.wav")) {
+        std::cerr << "ERRO: Falha ao carregar success.wav" << std::endl;
+    }
+    sf::Sound successSound;
+    successSound.setBuffer(successSoundBuffer);
+    
+    // 4. Buffer para Efeito Sonoro de Erro/Expiração (sf::Sound)
+    sf::SoundBuffer errorSoundBuffer;
+    if (!errorSoundBuffer.loadFromFile("./assets/audio/error.wav")) {
+        std::cerr << "ERRO: Falha ao carregar error.wav" << std::endl;
+    }
+    sf::Sound errorSound;
+    errorSound.setBuffer(errorSoundBuffer);
+
+    backgroundMusic.play();
+
     //Window loop
     bool pedido = false;
     int bread_type = -1;
@@ -385,7 +422,6 @@ int main() {
     int score = 9;
     sf::Clock clock;
     sf::Event e;
-
     float Felapsed;
     int Fminutes, Fsecs, Fmili;
     while (win.isOpen()) {
@@ -516,6 +552,7 @@ int main() {
                                 elements.push_back(tomate);
                                 id_escolhido = 6;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (alface_colision.contains(worldPos)) {
@@ -524,6 +561,7 @@ int main() {
                                 elements.push_back(alface);
                                 id_escolhido = 7;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (bacon_colision.contains(worldPos)) {
@@ -532,6 +570,7 @@ int main() {
                                 elements.push_back(bacon);
                                 id_escolhido = 11;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
@@ -549,7 +588,8 @@ int main() {
                                     bread_base = true;
                                 }
 
-                                layer_offset += 6.5f;                        
+                                layer_offset += 6.5f;
+                                pickSound.play();                        
                             }
 
                             if (cebola_car_colision.contains(worldPos)) {
@@ -558,6 +598,7 @@ int main() {
                                 elements.push_back(cebola_car);
                                 id_escolhido = 12;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (cebola_nor_colision.contains(worldPos)) {
@@ -566,6 +607,7 @@ int main() {
                                 elements.push_back(cebola_nor);
                                 id_escolhido = 8;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (frango_colision.contains(worldPos)) {
@@ -574,6 +616,7 @@ int main() {
                                 elements.push_back(frango);
                                 id_escolhido = 5;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (hamburguer_bov_colision.contains(worldPos)) {
@@ -582,6 +625,7 @@ int main() {
                                 elements.push_back(hamburguer_bov);
                                 id_escolhido = 3;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (hamburguer_veg_colision.contains(worldPos)) {
@@ -590,6 +634,7 @@ int main() {
                                 elements.push_back(hamburguer_veg);
                                 id_escolhido = 4;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (ketchup_colision.contains(worldPos)) {
@@ -598,6 +643,7 @@ int main() {
                                 elements.push_back(ketchup_sauce);
                                 id_escolhido = 10;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (mustard_colision.contains(worldPos)) {
@@ -606,6 +652,7 @@ int main() {
                                 elements.push_back(mustard_sauce);
                                 id_escolhido = 9;
                                 ing_picked = true;
+                                pickSound.play();
                             }
 
                             if (pao_colision.contains(worldPos) && (bread_type == 0 | bread_type == -1)) {
@@ -625,6 +672,7 @@ int main() {
                                 }
 
                                 layer_offset += 6.5f;
+                                pickSound.play();
                             }
 
                             if (comanda_colision.contains(worldPos) && pedido) {
@@ -663,6 +711,7 @@ int main() {
                     //verification
                     if (pilhas_iguais((*pronta).getPilha(), receita_montada)) {
                         cout << "Parabéns! Você acertou a " << pronta->getNome() << "em cima do tempo!" << endl;
+                        successSound.play();
                         if (currentRecipe->getId() == pronta->getId()) {
                             delete_pilha(receita_montada);
                             elements.clear();
@@ -671,6 +720,7 @@ int main() {
                         cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
                         //playing = false;
                         score--;
+                        errorSound.play();
                     }
                     
                     int rId = 0;
@@ -735,9 +785,11 @@ int main() {
                     //verification
                     if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
                         cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
+                        successSound.play();
                     } else {
                         cout << "Que pena! Você errou a receita!" << endl;
                         score--;
+                        errorSound.play();
                     }
 
                     int rId = 0;
@@ -876,6 +928,10 @@ int main() {
             }
             win.display();
         }
+    }
+
+    if (backgroundMusic.getStatus() == sf::Music::Playing || backgroundMusic.getStatus() == sf::Music::Paused) {
+        backgroundMusic.stop(); // Garante que o thread de áudio seja interrompido
     }
 
     cout << "Out of the windowloop" << endl;
