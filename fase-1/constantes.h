@@ -28,6 +28,6 @@ const vector<vector<int>> INGREDIENTES = {
 };
 
 const int MAX_INGREDIENTES = 7;
-const int MIN_TEMPO = 120;
-const int MAX_TEMPO = 180;
+const int MIN_TEMPO = 30;
+const int MAX_TEMPO = 75;
 #endif
