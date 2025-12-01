@@ -66,6 +66,46 @@ int main() {
     cozinha.setPosition(sf::Vector2f(0, 0));
     cozinha.setScale(sf::Vector2f(0.6f, 0.81f));
 
+    sf::Texture TitleScreen_texture;
+    if (!TitleScreen_texture.loadFromFile("./sprites/TitleScreen.png")) {
+        return -1;
+    }
+
+    sf::Sprite titleScreen;
+    titleScreen.setTexture(TitleScreen_texture);
+    titleScreen.setPosition(sf::Vector2f(0, 0));
+    titleScreen.setScale(sf::Vector2f(1.5f, 1.7f));
+
+    sf::RectangleShape startBtn;
+    startBtn.setPosition(sf::Vector2f(125, 312));
+    startBtn.setFillColor(sf::Color::Blue);
+    startBtn.setSize(sf::Vector2f(550, 125));
+
+    sf::RectangleShape exitBtn;
+    exitBtn.setPosition(sf::Vector2f(125, 442));
+    exitBtn.setFillColor(sf::Color::Blue);
+    exitBtn.setSize(sf::Vector2f(550, 125));
+
+    sf::Texture GameOverScreen_texture;
+    if (!GameOverScreen_texture.loadFromFile("./sprites/GameOverScreen.png")) {
+        return -1;
+    }
+
+    sf::Sprite GameOverScreen;
+    GameOverScreen.setTexture(GameOverScreen_texture);
+    GameOverScreen.setPosition(sf::Vector2f(0, 0));
+    GameOverScreen.setScale(sf::Vector2f(0.7f, 0.8f));
+
+    sf::RectangleShape restartBtn;
+    restartBtn.setPosition(sf::Vector2f(50, 550));
+    restartBtn.setFillColor(sf::Color::Blue);
+    restartBtn.setSize(sf::Vector2f(400, 50));
+
+    sf::RectangleShape mainMenuBtn;
+    mainMenuBtn.setPosition(sf::Vector2f(420, 550));
+    mainMenuBtn.setFillColor(sf::Color::Green);
+    mainMenuBtn.setSize(sf::Vector2f(400, 50));
+
     sf::Texture tomate_texture;
     if (!tomate_texture.loadFromFile("./sprites/Tomate.png")) {
         return -1;
@@ -295,8 +335,13 @@ int main() {
 
     sf::Text GameOverText;
     GameOverText.setFont(font);
-    GameOverText.setCharacterSize(24);
-    GameOverText.setFillColor(sf::Color::White);
+    GameOverText.setCharacterSize(16);
+    GameOverText.setFillColor(sf::Color::Black);
+
+    sf::Text GameOverTitle;
+    GameOverTitle.setFont(pixelate);
+    GameOverTitle.setCharacterSize(24);
+    GameOverTitle.setFillColor(sf::Color::Black);
 
     sf::Text StartingScreenText;
     StartingScreenText.setFont(font);
@@ -345,34 +390,39 @@ int main() {
     int Fminutes, Fsecs, Fmili;
     while (win.isOpen()) {
         while (onMenu) {
+            cursorPosition = sf::Mouse::getPosition(win);
+            worldPos = win.mapPixelToCoords(cursorPosition);
+
             while (win.pollEvent(e)) {
                 if (e.type == sf::Event::Closed) {
                     win.close();
                 }
 
-                if (e.type == sf::Event::KeyPressed) {
-                    if (e.key.code == sf::Keyboard::Space) {
-                        playing = true;
-                        start = true;
-                        onMenu = false;
-                    }
+                if (e.type == sf::Event::MouseButtonPressed) {
+                    if (e.mouseButton.button == sf::Mouse::Left) {
+                        if (startBtn.getGlobalBounds().contains(worldPos)) {
+                            playing = true;
+                            start = true;
+                            onMenu = false;
+                        }
 
-                    if (e.key.code == sf::Keyboard::Q) {
-                        win.close();
+                        if (exitBtn.getGlobalBounds().contains(worldPos)) {
+                            win.close();
+                            break;
+                        }
                     }
                 }
             }
-            stringstream stsctxt;
-            stsctxt << "Cozinha DAComp!\n Press SPACEBAR to start playing or Q to exit!";
-            string StartScreenTxt = stsctxt.str();
-            StartingScreenText.setString(sf::String::fromUtf8(StartScreenTxt.begin(), StartScreenTxt.end()));
             win.clear(sf::Color::Black);
-            win.draw(StartingScreenText);
+            win.draw(titleScreen);
+            //win.draw(startBtn);
+            //win.draw(exitBtn);
             win.display();
         }
 
         while (!onMenu) {
             if (start) {
+                score = 0;
                 fila_de_receitas.clear();
                 start = false;
                 id_escolhido = 0;
@@ -759,16 +809,18 @@ int main() {
                         win.close();
                     }
 
-                    if (e.type == sf::Event::KeyPressed) {
-                        if (e.key.code == sf::Keyboard::R) {
-                            playing = true;
-                            start = true;
-                        }
+                    if (e.type == sf::Event::MouseButtonPressed) {
+                        if (e.mouseButton.button == sf::Mouse::Left) {
+                            if (restartBtn.getGlobalBounds().contains(worldPos)) {
+                                playing = true;
+                                start = true;
+                            }
 
-                        if (e.key.code == sf::Keyboard::Q) {
-                            playing = false;
-                            start = false;
-                            onMenu = true;
+                            if (mainMenuBtn.getGlobalBounds().contains(worldPos)) {
+                                playing = false;
+                                start = false;
+                                onMenu = true;
+                            }
                         }
                     }
                 }
@@ -782,8 +834,6 @@ int main() {
                 }
 
                 clock.restart();
-
-                GameOverText.setPosition(sf::Vector2f(100, 100));
                 string status;
                 if (score < 0) {
                     status = "Oh my god... What have you done?!";
@@ -804,17 +854,24 @@ int main() {
                 } else {
                     status = "Are you a God or Something?";
                 }
-
+                
                 stringstream gmOvrStrS;
-                gmOvrStrS << "Game Over!\n\"" << status << "\"\nTime Elapsed: "
-                        << setfill('.') << setw(12) << Fminutes << ":" << Fsecs << "\nScore: "
-                        << setfill('.') << setw(22) << score << "pts\n" << "Press R to restart or Press Q to go to Main Menu!";
+                gmOvrStrS << "\n\"" << status << "\"\nTime Elapsed: "
+                        << setfill('.') << setw(36) << "" << setfill('0') << setw(2) 
+                        << Fminutes << ":" << setfill('0') << setw(2) << Fsecs << "\nScore: "
+                        << setfill('.') << setw(48) << score << "pts\n" << "Press R to restart or Press Q to go to Main Menu!";
 
                 string gameOverString = gmOvrStrS.str();
 
                 GameOverText.setString(sf::String::fromUtf8(gameOverString.begin(), gameOverString.end()));
-
+                GameOverText.setPosition(sf::Vector2f(175, 390));
+                GameOverTitle.setString("Game Over!");
+                GameOverTitle.setPosition(sf::Vector2f(275, 350));
+                win.draw(GameOverScreen);
+                //win.draw(restartBtn);
+                //win.draw(mainMenuBtn);
                 win.draw(GameOverText);
+                win.draw(GameOverTitle);
                 //break;
             }
             win.display();
