@@ -107,5 +107,6 @@ class HeapPrioridade {
                     return p;
                 }
             }
+            return 0;
         }
 };

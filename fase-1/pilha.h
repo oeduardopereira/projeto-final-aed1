@@ -68,17 +68,16 @@ bool empilha(pilha *p, Ingrediente i) {
 // remove o elemento do topo da pilha e retorna, por referência, se deu certo, e o elemento que foi desempilhado
 Ingrediente desempilha(pilha *p, bool *deuCerto) {
    if(!vazia(p)) {
-       Ingrediente desempilhado = p->ingredientes[p->indexTopo]; // valor que vai ser desempilhado
-       p->indexTopo--; // atualiza o topo
-       *deuCerto = true;
-
-       return desempilhado;
+        Ingrediente desempilhado = p->ingredientes[p->indexTopo]; // valor que vai ser desempilhado
+        p->indexTopo--; // atualiza o topo
+        *deuCerto = true;
+        return desempilhado;
 
    } else {
-       *deuCerto = false;
-       Ingrediente i = Ingrediente("Erro ao desempilhar!", -2, -2);
+        *deuCerto = false;
+        Ingrediente i = Ingrediente("Erro ao desempilhar!", -2, -2);
 
-       return i;
+        return i;
    }
 }
 

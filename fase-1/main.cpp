@@ -597,6 +597,18 @@ int main() {
                             elements.clear();
                             receita_montada = criaPilha();
                         }
+
+                        if (e.key.code == sf::Keyboard::BackSpace) {
+                            bool ok;
+                            desempilha(receita_montada, &ok);
+                            if (ok) {
+                                elements.pop_back();
+                                if (receita_montada->indexTopo == -1) {
+                                    bread_base = false;
+                                    bread_type = -1;
+                                }
+                            }
+                        }
                     }
 
                     if (e.type == sf::Event::MouseButtonPressed) {
@@ -776,6 +788,10 @@ int main() {
                         cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
                         //playing = false;
                         score--;
+                        if (currentRecipe->getId() == pronta->getId()) {
+                            delete_pilha(receita_montada);
+                            elements.clear();
+                        }
                         failureSound.play();
                     }
                     
