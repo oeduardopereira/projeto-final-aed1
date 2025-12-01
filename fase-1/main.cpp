@@ -40,7 +40,7 @@ int main() {
 
     sf::Sprite comanda;
     comanda.setTexture(comanda_texture);
-    comanda.setPosition(sf::Vector2f(650, 15));
+    comanda.setPosition(sf::Vector2f(13, 495));
     comanda.setScale(sf::Vector2f(0.5f, 0.5f));
     sf::FloatRect comanda_colision = comanda.getGlobalBounds();
     sf::Color originalComanda = comanda.getColor();
@@ -57,14 +57,14 @@ int main() {
     sf::Color originalComanda_aberta = comanda_aberta.getColor();
 
     sf::Texture cozinha_texture;
-    if (!cozinha_texture.loadFromFile("./sprites/prot_coz.png")) {
+    if (!cozinha_texture.loadFromFile("./sprites/cozinha.png")) {
         return -1;
     }
 
     sf::Sprite cozinha;
     cozinha.setTexture(cozinha_texture);
     cozinha.setPosition(sf::Vector2f(0, 0));
-    cozinha.setScale(sf::Vector2f(0.6f, 0.81f));
+    cozinha.setScale(sf::Vector2f(0.8f, 0.9f));
 
     sf::Texture TitleScreen_texture;
     if (!TitleScreen_texture.loadFromFile("./sprites/TitleScreen.png")) {
@@ -112,8 +112,8 @@ int main() {
     }
     sf::Sprite tomate;
     tomate.setTexture(tomate_texture);
-    tomate.setPosition(sf::Vector2f(90, 450));
-    tomate.setScale(sf::Vector2f(0.3f, 0.3f));
+    tomate.setPosition(sf::Vector2f(40, 40));
+    tomate.setScale(sf::Vector2f(0.25f, 0.25f));
     sf::FloatRect tomate_colision = tomate.getGlobalBounds();
     sf::Color originalTomate = tomate.getColor();
     tomate.setColor(originalTomate);
@@ -124,7 +124,7 @@ int main() {
     }
     sf::Sprite alface;
     alface.setTexture(alface_texture);
-    alface.setPosition(sf::Vector2f(90, 300));
+    alface.setPosition(sf::Vector2f(30, 190));
     alface.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect alface_colision = alface.getGlobalBounds();
     sf::Color originalAlface = alface.getColor();
@@ -135,7 +135,7 @@ int main() {
     }
     sf::Sprite bacon;
     bacon.setTexture(bacon_texture);
-    bacon.setPosition(sf::Vector2f(90, 150));
+    bacon.setPosition(sf::Vector2f(130, 195));
     bacon.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect bacon_colision = bacon.getGlobalBounds();
     sf::Color originalBacon = bacon.getColor();
@@ -146,7 +146,7 @@ int main() {
     }
     sf::Sprite brioche;
     brioche.setTexture(brioche_texture);
-    brioche.setPosition(sf::Vector2f(310, 45));
+    brioche.setPosition(sf::Vector2f(430, 233));
     brioche.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect brioche_colision = brioche.getGlobalBounds();
     sf::Color originalBrioche = brioche.getColor();
@@ -177,7 +177,7 @@ int main() {
     }
     sf::Sprite cebola_car;
     cebola_car.setTexture(cebola_car_texture);
-    cebola_car.setPosition(sf::Vector2f(425, 50));
+    cebola_car.setPosition(sf::Vector2f(40, 115));
     cebola_car.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect cebola_car_colision = cebola_car.getGlobalBounds();
     sf::Color originalCebola_Car = cebola_car.getColor();
@@ -188,7 +188,7 @@ int main() {
     }
     sf::Sprite cebola_nor;
     cebola_nor.setTexture(cebola_nor_texture);
-    cebola_nor.setPosition(sf::Vector2f(525, 50));
+    cebola_nor.setPosition(sf::Vector2f(130, 115));
     cebola_nor.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect cebola_nor_colision = cebola_nor.getGlobalBounds();
     sf::Color originalCebola_Nor = cebola_nor.getColor();
@@ -199,7 +199,7 @@ int main() {
     }
     sf::Sprite frango;
     frango.setTexture(frango_texture);
-    frango.setPosition(sf::Vector2f(700, 475));
+    frango.setPosition(sf::Vector2f(30, 280));
     frango.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect frango_colision = frango.getGlobalBounds();
     sf::Color originalFrango = frango.getColor();
@@ -210,7 +210,7 @@ int main() {
     }
     sf::Sprite hamburguer_bov;
     hamburguer_bov.setTexture(hamburguer_bov_texture);
-    hamburguer_bov.setPosition(sf::Vector2f(700, 325));
+    hamburguer_bov.setPosition(sf::Vector2f(130, 280));
     hamburguer_bov.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect hamburguer_bov_colision = hamburguer_bov.getGlobalBounds();
     sf::Color originalHamburguer_Bov = hamburguer_bov.getColor();
@@ -221,7 +221,7 @@ int main() {
     }
     sf::Sprite hamburguer_veg;
     hamburguer_veg.setTexture(hamburguer_veg_texture);
-    hamburguer_veg.setPosition(sf::Vector2f(690, 175));
+    hamburguer_veg.setPosition(sf::Vector2f(130, 365));
     hamburguer_veg.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect hamburguer_veg_colision = hamburguer_veg.getGlobalBounds();
     sf::Color originalHamburguer_Veg = hamburguer_veg.getColor();
@@ -232,7 +232,7 @@ int main() {
     }
     sf::Sprite ketchup;
     ketchup.setTexture(ketchup_texture);
-    ketchup.setPosition(sf::Vector2f(310, 290));
+    ketchup.setPosition(sf::Vector2f(350, 210));
     ketchup.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect ketchup_colision = ketchup.getGlobalBounds();
     sf::Color originalKetchup = ketchup.getColor();
@@ -254,7 +254,7 @@ int main() {
     }
     sf::Sprite mustard;
     mustard.setTexture(mustard_texture);
-    mustard.setPosition(sf::Vector2f(420, 290));
+    mustard.setPosition(sf::Vector2f(270, 215));
     mustard.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect mustard_colision = mustard.getGlobalBounds();
     sf::Color originalMustard = mustard.getColor();
@@ -276,7 +276,7 @@ int main() {
     }
     sf::Sprite pao;
     pao.setTexture(pao_texture);
-    pao.setPosition(sf::Vector2f(525, 290));
+    pao.setPosition(sf::Vector2f(500, 230));
     pao.setScale(sf::Vector2f(0.3f, 0.3f));
     sf::FloatRect pao_colision = pao.getGlobalBounds();
     sf::Color originalpao = pao.getColor();
@@ -315,7 +315,7 @@ int main() {
     timerText.setFont(pixelate);
     timerText.setCharacterSize(20);
     timerText.setFillColor(sf::Color::Black);
-    timerText.setPosition(sf::Vector2f(65, 25));
+    timerText.setPosition(sf::Vector2f(420, 150));
 
     sf::Text recipeText;
     recipeText.setFont(handmade);
@@ -326,7 +326,7 @@ int main() {
     remainingRecipesText.setFont(pixelate);
     remainingRecipesText.setCharacterSize(12);
     remainingRecipesText.setFillColor(sf::Color::Black);
-    remainingRecipesText.setPosition(sf::Vector2f(20, 50));
+    remainingRecipesText.setPosition(sf::Vector2f(340, 180));
 
     sf::Text titleText;
     titleText.setFont(font);
@@ -511,7 +511,7 @@ int main() {
                     if (e.type == sf::Event::MouseButtonPressed) {
                         if (e.mouseButton.button == sf::Mouse::Left) {
                             if (tomate_colision.contains(worldPos)) {
-                                tomate.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                                tomate.setPosition(sf::Vector2f(430, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(tomate);
                                 id_escolhido = 6;
@@ -519,7 +519,7 @@ int main() {
                             }
 
                             if (alface_colision.contains(worldPos)) {
-                                alface.setPosition(sf::Vector2f(425, 495 - layer_offset));
+                                alface.setPosition(sf::Vector2f(425, 345 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(alface);
                                 id_escolhido = 7;
@@ -527,7 +527,7 @@ int main() {
                             }
 
                             if (bacon_colision.contains(worldPos)) {
-                                bacon.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                bacon.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(bacon);
                                 id_escolhido = 11;
@@ -537,10 +537,10 @@ int main() {
                             if (brioche_colision.contains(worldPos) && (bread_type == 1 | bread_type == -1)) {
                                 bread_type = 1;
                                 if (!bread_base) {
-                                    base_brioche.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                    base_brioche.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                     elements.push_back(base_brioche);
                                 } else {
-                                    topo_brioche.setPosition(sf::Vector2f(407, 475 - layer_offset));
+                                    topo_brioche.setPosition(sf::Vector2f(407, 335 - layer_offset));
                                     elements.push_back(topo_brioche);
                                 }
                                 id_escolhido = 2;
@@ -553,7 +553,7 @@ int main() {
                             }
 
                             if (cebola_car_colision.contains(worldPos)) {
-                                cebola_car.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                cebola_car.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(cebola_car);
                                 id_escolhido = 12;
@@ -561,7 +561,7 @@ int main() {
                             }
 
                             if (cebola_nor_colision.contains(worldPos)) {
-                                cebola_nor.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                cebola_nor.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(cebola_nor);
                                 id_escolhido = 8;
@@ -569,7 +569,7 @@ int main() {
                             }
 
                             if (frango_colision.contains(worldPos)) {
-                                frango.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                frango.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(frango);
                                 id_escolhido = 5;
@@ -577,7 +577,7 @@ int main() {
                             }
 
                             if (hamburguer_bov_colision.contains(worldPos)) {
-                                hamburguer_bov.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                hamburguer_bov.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(hamburguer_bov);
                                 id_escolhido = 3;
@@ -585,7 +585,7 @@ int main() {
                             }
 
                             if (hamburguer_veg_colision.contains(worldPos)) {
-                                hamburguer_veg.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                hamburguer_veg.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(hamburguer_veg);
                                 id_escolhido = 4;
@@ -593,7 +593,7 @@ int main() {
                             }
 
                             if (ketchup_colision.contains(worldPos)) {
-                                ketchup_sauce.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                                ketchup_sauce.setPosition(sf::Vector2f(430, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(ketchup_sauce);
                                 id_escolhido = 10;
@@ -601,7 +601,7 @@ int main() {
                             }
 
                             if (mustard_colision.contains(worldPos)) {
-                                mustard_sauce.setPosition(sf::Vector2f(430, 500 - layer_offset));
+                                mustard_sauce.setPosition(sf::Vector2f(430, 350 - layer_offset));
                                 layer_offset += 6.5f;
                                 elements.push_back(mustard_sauce);
                                 id_escolhido = 9;
@@ -612,10 +612,10 @@ int main() {
                                 bread_type = 0;
 
                                 if (!bread_base) {
-                                    base_pao.setPosition(sf::Vector2f(425, 500 - layer_offset));
+                                    base_pao.setPosition(sf::Vector2f(425, 350 - layer_offset));
                                     elements.push_back(base_pao);
                                 } else {
-                                    topo_pao.setPosition(sf::Vector2f(407, 475 - layer_offset));
+                                    topo_pao.setPosition(sf::Vector2f(407, 335 - layer_offset));
                                     elements.push_back(topo_pao);
                                 }
                                 id_escolhido = 1;
@@ -632,8 +632,8 @@ int main() {
                                     
                                     vendo_pedido = true;
                                     sf::Vector2f cmd_pos = comanda.getPosition();
-                                    comanda_aberta.setPosition(sf::Vector2f(cmd_pos.x - 100, cmd_pos.y));
-                                    recipeText.setPosition(sf::Vector2f(cmd_pos.x - 85, cmd_pos.y + 10));
+                                    comanda_aberta.setPosition(sf::Vector2f(cmd_pos.x + 550, cmd_pos.y - 135));
+                                    recipeText.setPosition(sf::Vector2f(cmd_pos.x + 565, cmd_pos.y - 125));
                                 } else {
                                     vendo_pedido = false;
                                 }
