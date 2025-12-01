@@ -382,13 +382,14 @@ int main() {
     bool start = true;
     bool timeRunning = false;
     bool fTimeSet = false;
+    bool exit = false;
     int score = 9;
     sf::Clock clock;
     sf::Event e;
 
     float Felapsed;
     int Fminutes, Fsecs, Fmili;
-    while (win.isOpen()) {
+    while (win.isOpen() && !exit) {
         while (onMenu) {
             cursorPosition = sf::Mouse::getPosition(win);
             worldPos = win.mapPixelToCoords(cursorPosition);
@@ -408,6 +409,7 @@ int main() {
 
                         if (exitBtn.getGlobalBounds().contains(worldPos)) {
                             win.close();
+                            exit = true;
                             break;
                         }
                     }
