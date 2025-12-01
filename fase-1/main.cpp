@@ -835,6 +835,10 @@ int main() {
                             delete_pilha(receita_montada);
                             elements.clear();
                         }
+
+                        if (fila_de_receitas.getSize() == 0) {
+                            score++;
+                        }
                     } else {
                         cout << "Que pena! A receita: " << pronta->getNome() << "expirou" << endl;
                         //playing = false;
@@ -914,6 +918,9 @@ int main() {
                     if (pilhas_iguais((*currentRecipe).getPilha(), receita_montada)) {
                         cout << "Parabéns! Você acertou a receita: " << currentRecipe->getNome() << endl;
                         successSound.play();
+                        if (fila_de_receitas.getSize() == 1) {
+                            score++;
+                        }
                     } else {
                         cout << "Que pena! Você errou a receita!" << endl;
                         score--;
