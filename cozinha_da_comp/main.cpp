@@ -495,6 +495,7 @@ int main() {
     while (win.isOpen() && !exit) {
         starting_state = 0;
         while (onMenu) {
+            clock.restart();
             cursorPosition = sf::Mouse::getPosition(win);
             worldPos = win.mapPixelToCoords(cursorPosition);
 
@@ -539,6 +540,9 @@ int main() {
                         hoverSound.play();
                     }
                 }
+            }
+            if (!onMenu) {
+                continue;
             }
             win.clear(sf::Color::Black);
             if (!draw_ing && !draw_tips) {
@@ -854,12 +858,9 @@ int main() {
                         failureSound.play();
                     }
                     
-                    int rId = 0;
                     if (!fila_de_receitas.estaVazio()) {
-                        cout << "inside while loop" << endl;
-                        for (Receita* r : fila_de_receitas.getElementos()) {
-                            cout <<  rId << ". " << r->getNome() << " | " << r->getId() << endl;
-                            rId++;
+                        if (fila_de_receitas.getSize() == 1) {
+                            clockSound.play();
                         }
                     } else {
                         playing = false;
@@ -939,15 +940,8 @@ int main() {
                         failureSound.play();
                     }
 
-                    int rId = 0;
-                    cout << "Inside verification clause" << endl;
-                    for (Receita* r : fila_de_receitas.getElementos()) {
-                        cout <<  rId << ". " << r->getNome() << endl;
-                        rId++;
-                    }
-
                     fila_de_receitas.deletar(currentRecipeId);
-                    if (fila_de_receitas.getSize() == 1) {
+                    if (!fila_de_receitas.estaVazio() && fila_de_receitas.getSize() == 1) {
                         clockSound.play();
                     }
                     if (fila_de_receitas.estaVazio()) {
@@ -1016,6 +1010,7 @@ int main() {
                             if (restartBtn.getGlobalBounds().contains(worldPos)) {
                                 playing = true;
                                 start = true;
+                                break;
                             }
 
                             if (mainMenuBtn.getGlobalBounds().contains(worldPos)) {
@@ -1026,6 +1021,9 @@ int main() {
                             hoverSound.play();
                         }
                     }
+                }
+                if (playing == true) {
+                    continue;
                 }
                 win.clear(sf::Color::Black);
                 if (!fTimeSet) {
