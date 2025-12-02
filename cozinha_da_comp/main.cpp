@@ -502,6 +502,7 @@ int main() {
             while (win.pollEvent(e)) {
                 if (e.type == sf::Event::Closed) {
                     win.close();
+                    exit = true;
                 }
 
                 if (e.type == sf::Event::KeyPressed) {
@@ -540,6 +541,9 @@ int main() {
                         hoverSound.play();
                     }
                 }
+            }
+            if (exit) {
+                break;
             }
             if (!onMenu) {
                 continue;
@@ -623,6 +627,7 @@ int main() {
                 while (win.pollEvent(e)) {
                     if (e.type == sf::Event::Closed) {
                         win.close();
+                        exit = true;
                     }
 
                     if (e.type == sf::Event::KeyPressed) {
@@ -821,6 +826,10 @@ int main() {
                     }
                 }
 
+                if (exit) {
+                    break;
+                }
+
                 for (Receita* r : fila_de_receitas.getElementos()) {
                     if (secs < oldsecs) {
                         oldsecs = secs;
@@ -1003,6 +1012,7 @@ int main() {
                 while (win.pollEvent(e)) {
                     if (e.type == sf::Event::Closed) {
                         win.close();
+                        exit = true;
                     }
 
                     if (e.type == sf::Event::MouseButtonPressed) {
@@ -1021,6 +1031,9 @@ int main() {
                             hoverSound.play();
                         }
                     }
+                }
+                if (exit) {
+                    break;
                 }
                 if (playing == true) {
                     continue;
