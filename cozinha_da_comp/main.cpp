@@ -15,7 +15,7 @@
 #include "heap.cpp"
 #include <iomanip>
 
-#define NUM_RECEITAS_INICIAIS 1
+#define NUM_RECEITAS_INICIAIS 10
 
 using namespace std;
 
